@@ -78,6 +78,18 @@
               <h3>Bitirganlar</h3>
             </RouterLink>
           </li>
+          <li
+            class="nav_item group"
+            :class="{ 'bg-blue text-white': $route.path === '/leads' }"
+          >
+            <RouterLink
+              to="/leads"
+              class="flex items-center gap-2 group-hover:text-white transition-colors delay-75 p-4"
+            >
+            <i class='bx bxs-id-card text-[28px]'></i>
+              <h3>Lidlar</h3>
+            </RouterLink>
+          </li>
         </ul>
       </nav>
     </div>

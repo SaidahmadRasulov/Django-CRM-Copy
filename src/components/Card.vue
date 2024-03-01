@@ -6,6 +6,7 @@
     <div class="card_body p-4">
       <h1 class="text-2xl">Guruh Raqami: {{ item.title }}</h1>
       <h2>O'quvchilar Soni: {{ item.students.length }}</h2>
+      <h2>O'qish kunlari: {{ item.studyDay }}</h2>
     </div>
     <div class="card_footer p-4 text-end">
       <RouterLink :to="`/groups/${item.title}`">
