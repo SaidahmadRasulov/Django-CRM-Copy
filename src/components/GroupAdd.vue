@@ -67,7 +67,8 @@ export default {
     };
   },
   methods: {
-    handleGroupAdd() {
+    async handleGroupAdd() {
+      const token = localStorage.getItem("token");
       let new_group = {
         id: parseInt(Date.now().toString().slice(1, 5)),
         title: this.group_add,
@@ -80,33 +81,49 @@ export default {
         new_group.cat !== "" &&
         new_group.studyDay !== ""
       ) {
-        this.storedGroups.push(new_group);
-        this.storedLoad = true;
-        localStorage.setItem("loaded", JSON.stringify(this.storedLoad));
-        localStorage.setItem("groups", JSON.stringify(this.storedGroups));
-        console.log(this.storedGroups);
-        alert("Guruh muvafaqiyatli koshildi");
-        (this.course_select = ""),
-          (this.group_add = ""),
-          (this.study_days = "");
+        try {
+          const response = await fetch(
+            "http://django-admin.uz/api/groups/create/",
+            {
+              method: "POST",
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-type": "application/json",
+              },
+              body: JSON.stringify(new_group),
+            }
+          );
+          alert("Guruh muvafaqiyatli koshildi");
+          this.course_select = "";
+          this.group_add = "";
+          this.study_days = "";
+        } catch (error) {
+          // Handle network error
+          console.error("Network error:", error);
+          alert("Network Error: Failed to create group");
+        }
       } else {
         alert("Iltimos barcha ma'lumotlarni kiriting");
       }
     },
   },
-  mounted() {
-    const getedGroups = JSON.parse(localStorage.getItem("groups"));
-    if (getedGroups) {
-      this.storedGroups = getedGroups;
-      console.log(this.storedGroups);
-    } else if (this.handleGroupAdd()) {
-      console.log("changed");
-    }
-    const loadedPage = JSON.parse(localStorage.getItem("loaded"));
-    if (loadedPage) {
-      this.storedLoad = loadedPage;
-    }
-  },
+  // mounted() {
+  //   const getedGroups = JSON.parse(localStorage.getItem("groups"));
+  //   if (getedGroups) {
+  //     this.storedGroups = getedGroups;
+  //     console.log(this.storedGroups);
+  //   } else if (this.handleGroupAdd()) {
+  //     console.log("changed");
+  //   }
+  //   const loadedPage = JSON.parse(localStorage.getItem("loaded"));
+  //   if (loadedPage) {
+  //     this.storedLoad = loadedPage;
+  //   }
+  //   fetch("http://admin.djangoacademy.uz/api/courses/all/", {
+  //     headers: { "Content-type": "application/json" },
+  //     credentials: "include",
+  //   }).then((res) => console.log(res.json()));
+  // },
 };
 </script>
 <style lang=""></style>

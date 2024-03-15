@@ -1,16 +1,17 @@
-import { createRouter, createWebHashHistory } from "vue-router";
+import { createRouter, createWebHistory } from "vue-router";
 import Home from "../view/Home.vue";
 import StudentsCheking from "../view/StudentsCheking.vue";
 import Students from "../view/Students.vue";
 import Payments from "../view/Payments.vue";
-import CompletedPage from '../view/CompletedPage.vue'
-import GroupsAbout from '../view/GroupsAbout.vue'
-import Mentors from '../view/Mentors.vue'
-import MentorAbout from '../view/MentorAbout.vue'
-import Leads from '../view/Leads.vue'
+import CompletedPage from "../view/CompletedPage.vue";
+import GroupsAbout from "../view/GroupsAbout.vue";
+import Mentors from "../view/Mentors.vue";
+import MentorAbout from "../view/MentorAbout.vue";
+import Leads from "../view/Leads.vue";
+import SignIn from "../view/SignIn.vue";
 
 const router = createRouter({
-  history: createWebHashHistory(),
+  history: createWebHistory(),
   routes: [
     {
       name: "home",
@@ -35,28 +36,33 @@ const router = createRouter({
     {
       name: "completed",
       path: "/completed",
-      component: CompletedPage
+      component: CompletedPage,
     },
     {
-      name: 'groupsAbout',
-      path: '/groups/:title',
-      component: GroupsAbout
+      name: "groupsAbout",
+      path: "/groups/:title",
+      component: GroupsAbout,
     },
     {
-      name: 'mentors',
-      path: '/mentors',
-      component: Mentors
+      name: "mentors",
+      path: "/mentors",
+      component: Mentors,
     },
     {
-      name: 'mentorsAbout',
-      path: '/mentors/:name',
-      component: MentorAbout
+      name: "mentorsAbout",
+      path: "/mentors/:name",
+      component: MentorAbout,
     },
     {
-      name: 'Leads',
-      path: '/leads',
-      component: Leads
-    }
+      name: "Leads",
+      path: "/leads",
+      component: Leads,
+    },
+    {
+      name: "SignIn",
+      path: "/signin",
+      component: SignIn,
+    },
   ],
 });
 

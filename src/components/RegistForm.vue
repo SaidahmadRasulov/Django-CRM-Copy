@@ -251,11 +251,7 @@ export default {
     },
   },
   mounted() {
-    if (!this.loaded) {
-      localStorage.setItem("groups", JSON.stringify(this.initialGroups));
-      this.loaded = false;
-      localStorage.setItem("loaded", JSON.stringify(this.loaded));
-    }
+    localStorage.setItem("groups", JSON.stringify(this.initialGroups));
     const getedGroups = JSON.parse(localStorage.getItem("groups"));
     if (getedGroups) {
       this.initialGroups = getedGroups;

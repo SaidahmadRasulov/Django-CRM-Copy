@@ -1,21 +1,25 @@
 <template>
-  <div class="flex justify-between">
+  <div class="flex justify-between" v-if="visibility">
     <LayoutNavbar />
     <div class="vertical_line w-1 h-[100vh] bg-blue"></div>
     <section class="w-4/5 bg-slate-300 p-4 h-[100vh]">
       <RouterView :data="data" />
     </section>
   </div>
+  <SignIn v-else />
 </template>
 
 <script>
 import LayoutNavbar from "./components/layout/LayoutNavbar.vue";
-import { RouterView } from "vue-router";
+import { RouterView, useRouter } from "vue-router";
+import { onMounted, ref } from "vue";
+import SignIn from "./view/SignIn.vue";
 
 export default {
   data() {
     return {
       data: [],
+      visibility: false,
       mentors: [
         {
           id: 1,
@@ -24,6 +28,7 @@ export default {
           value: "dev",
           groups: [],
           address: "Toshkent Shahar",
+          phone: "+998-90-142-71-41",
         },
         {
           id: 2,
@@ -32,6 +37,7 @@ export default {
           value: "py",
           groups: [],
           address: "Toshkent Shahar",
+          phone: "+998-90-142-71-41",
         },
         {
           id: 3,
@@ -51,8 +57,25 @@ export default {
       },
       deep: true,
     },
+    visibility: {
+      handler(newValue) {
+        localStorage.setItem("visibility", JSON.stringify(newValue));
+      },
+      deep: true,
+    },
   },
   mounted() {
+    const logged = JSON.parse(localStorage.getItem("login"));
+    const router = useRouter();
+    if (logged) {
+      this.visibility = true;
+      localStorage.setItem("visibility", JSON.stringify(this.visibility));
+    } else {
+      this.visibility = false;
+      localStorage.setItem("visibility", JSON.stringify(this.visibility));
+      router.push("/signin");
+    }
+
     const storedData = localStorage.getItem("students");
     if (!storedData) {
       localStorage.setItem("students", JSON.stringify(this.data));
@@ -66,6 +89,38 @@ export default {
       localStorage.setItem("teachers", JSON.stringify(this.mentors));
     }
   },
-  components: { LayoutNavbar, RouterView },
+  setup() {
+    onMounted(async () => {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        console.error("Token is missing. User may not be logged in.");
+        return;
+      }
+
+      try {
+        const response = await fetch(
+          "http://django-admin.uz/api/attendances/all/",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-type": "application/json",
+            },
+            credentials: "include",
+          }
+        );
+        console.log(response)
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const content = await response.json();
+        console.log(content);
+      } catch (error) {
+        console.error("An error occurred while fetching data:", error);
+      }
+    });
+  },
+  components: { LayoutNavbar, RouterView, SignIn },
 };
 </script>

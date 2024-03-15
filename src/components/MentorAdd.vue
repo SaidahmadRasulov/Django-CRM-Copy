@@ -9,6 +9,13 @@
           class="w-full py-2 px-4 outline-none mt-4 rounded-md"
         />
       </div>
+      <div class="mb-6">
+        <input
+          type="text"
+          placeholder="Telefon raqami"
+          class="w-full py-2 px-4 outline-none mt-4 rounded-md"
+        />
+      </div>
     </div>
   </div>
 </template>
