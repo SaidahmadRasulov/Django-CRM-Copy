@@ -30,19 +30,19 @@
           v-if="filteredStudents.length > 0"
           v-for="(student, index) in filteredStudents"
           :key="student.id"
-          :class="{ 'text-stone-500': student.deleted === true}"
+          :class="{ 'text-stone-500': student.deleted === true }"
         >
           <td class="border px-4 py-2">{{ index + 1 }}</td>
-          <td class="border px-4 py-2">{{ student.name }}</td>
-          <td class="border px-4 py-2">{{ student.phoneNumber }}</td>
+          <td class="border px-4 py-2">{{ student.fullname }}</td>
+          <td class="border px-4 py-2">{{ student.phone_number }}</td>
           <td class="border px-4 py-2">{{ student.parents }}</td>
-          <td class="border px-4 py-2">{{ student.course }}</td>
-          <td class="border px-4 py-2">{{ student.group }}</td>
+          <td class="border px-4 py-2">{{ student.course_info.title }}</td>
+          <td class="border px-4 py-2">{{ student.group_info.title }}</td>
           <td class="border px-4 py-2">
             <div class="flex items-center justify-center gap-1">
               <button
                 class="py-1 px-2 bg-blue text-lg rounded-lg hover:bg-transparent border border-blue hover:text-blue text-white"
-                @click="handleStartEdit(student)"
+                @click="handleEdit(student)"
               >
                 <i class="bx bx-pencil"></i>
               </button>
@@ -71,6 +71,7 @@
     <div v-if="toggleShow">
       <ModalForm :item="editObj" />
     </div>
+    <div v-else></div>
   </section>
 </template>
 
@@ -81,28 +82,39 @@ export default {
   data() {
     return {
       students: [],
+      token: localStorage.getItem("token"),
       tableSelect: "all",
       trashArray: [],
-      toggleShow: false,
+      toggleShow: localStorage.getItem("modal"),
       completedStudents: [],
       editObj: {},
     };
   },
+  methods: {
+    getStudents() {
+      fetch("http://django-admin.uz/api/customer/students/all/", {
+        headers: {
+          Authorization: `Bearer ${this.token}`,
+          "Content-type": "application/json",
+        },
+        credentials: "include",
+      })
+        .then((response) => response.json())
+        .then((response) => {
+          this.students = response.data;
+          console.log("Students: ",this.students);
+        });
+    },
+    handleEdit(obj) {
+      this.toggleShow = true;
+      localStorage.setItem("modal", JSON.stringify(this.toggleShow));
+      this.editObj = obj;
+      localStorage.setItem("edit_obj", JSON.stringify(this.editObj));
+    },
+  },
   mounted() {
-    const storedData = JSON.parse(localStorage.getItem("students"));
-    const storedModal = JSON.parse(localStorage.getItem("modal"));
-    const storedCompletedStudent = JSON.parse(
-      localStorage.getItem("completedStudents")
-    );
-    if (storedCompletedStudent) {
-      this.completedStudents = storedCompletedStudent;
-    }
-    if (storedData) {
-      this.students = storedData;
-    }
-    if (storedModal !== null) {
-      this.toggleShow = storedModal;
-    }
+    this.getStudents();
+    console.log(this.toggleShow);
   },
   computed: {
     filteredStudents() {
@@ -113,42 +125,6 @@ export default {
           (student) => student.course === this.tableSelect
         );
       }
-    },
-  },
-  methods: {
-    handleDelete(id) {
-      let confirmation = window.confirm("Shuni o'chirishga rozimisz?");
-      if (confirmation) {
-        const geteditem = this.students.filter((item) => item.id == id);
-        geteditem[0].deleted = true;
-        localStorage.setItem("students", JSON.stringify(this.students));
-      }
-    },
-
-    handleStartEdit(item) {
-      this.toggleShow = !this.toggleShow;
-      localStorage.setItem("modal", JSON.stringify(this.toggleShow));
-      if (this.toggleShow) {
-        this.editObj = item;
-        localStorage.setItem("editObj", JSON.stringify(this.editObj));
-      }
-    },
-    handleComplete(obj) {
-      let confirm = window.confirm("Bitirganligini tasdiqlang");
-      if (confirm) {
-        this.students = this.students.filter((item) => {
-          if (item.id == obj.id) {
-            this.completedStudents.push(obj);
-            localStorage.setItem(
-              "completedStudents",
-              JSON.stringify(this.completedStudents)
-            );
-          } else {
-            return item;
-          }
-        });
-      }
-      localStorage.setItem("students", JSON.stringify(this.students));
     },
   },
   components: { ModalForm },

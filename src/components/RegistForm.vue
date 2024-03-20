@@ -38,10 +38,9 @@
         <select
           id="group"
           class="px-2 py-1 rounded-md outline-none cursor-pointer"
-          @change="handleChangeGroup"
           v-model="groupSelect"
         >
-          <option :value="item.title" v-for="item in filteredGroups">
+          <option :value="item" v-for="item in groups">
             {{ item.title }}
           </option>
         </select>
@@ -52,9 +51,8 @@
           id="course"
           class="px-2 py-1 rounded-md outline-none cursor-pointer"
           v-model="courseSelect"
-          @change="handleChange"
         >
-          <option v-for="item in courses" :value="item.val">
+          <option v-for="item in courses" :value="item">
             {{ item.title }}
           </option>
         </select>
@@ -65,10 +63,9 @@
           id="teacher"
           class="px-2 py-1 rounded-md outline-none cursor-pointer"
           v-model="teacherSelect"
-          @change="handleTeacherChange"
         >
           <option v-for="item in teachers" :value="item.value">
-            {{ item.name }}
+            {{ item.fullname }}
           </option>
         </select>
       </div>
@@ -94,9 +91,10 @@ export default {
   data() {
     return {
       name: "",
-      loaded: true,
       phoneNumber: "",
-      courseSelect: "dev",
+      token: localStorage.getItem("token"),
+      course: {},
+      courseSelect: "",
       groupSelect: "",
       teachers: [],
       teacherSelect: "",
@@ -118,97 +116,41 @@ export default {
           val: "py",
         },
       ],
-      initialGroups: [
-        {
-          id: 1,
-          title: "200",
-          cat: "dev",
-          students: [],
-          studyDay: "Dushanba, Chorshanba, Juma",
-        },
-        {
-          id: 2,
-          title: "201",
-          cat: "des",
-          students: [],
-          studyDay: "Seyshanba, Payshanba, Shanba",
-        },
-        {
-          id: 3,
-          title: "202",
-          cat: "dev",
-          students: [],
-          studyDay: "Dushanba, Chorshanba, Juma",
-        },
-        {
-          id: 4,
-          title: "203",
-          cat: "des",
-          students: [],
-          studyDay: "Seyshanba, Payshanba, Shanba",
-        },
-        {
-          id: 5,
-          title: "205",
-          cat: "py",
-          students: [],
-          studyDay: "Dushanba, Chorshanba, Juma",
-        },
-        {
-          id: 6,
-          title: "206",
-          cat: "py",
-          students: [],
-          studyDay: "Seyshanba, Payshanba, Shanba",
-        },
-        {
-          id: 7,
-          title: "207",
-          cat: "py",
-          students: [],
-          studyDay: "Dushanba, Chorshanba, Juma",
-        },
-      ],
-      filteredGroups: [],
+      groups: [],
     };
   },
-  watch: {
-    initialGroups: {
-      handler(new_array) {
-        this.initialGroups = new_array;
-        localStorage.setItem("groups", JSON.stringify(this.initialGroups));
-      },
-      deep: true,
-    },
-    loaded: {
-      handler(new_value) {
-        this.loaded = new_value;
-        localStorage.setItem("loaded", JSON.stringify(this.loaded));
-      },
-      deep: true,
-    },
-  },
   methods: {
-    handleAdd() {
+    async handleAdd() {
       let newObj = {
         id: Date.now(),
-        name: this.name,
-        phoneNumber: this.phoneNumber,
+        fullname: this.name,
+        phone_number: this.phoneNumber,
         parents: this.parent,
-        group: this.groupSelect,
-        course: this.courseSelect,
+        group: this.groupSelect.id,
+        course: this.courseSelect.id,
         mentor: this.teacherSelect,
         deleted: false,
       };
+      const response = await fetch(
+        "http://django-admin.uz/api/customer/students/create/",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${this.token}`,
+            "Content-type": "application/json",
+          },
+          body: JSON.stringify(newObj),
+        }
+      ).then((response) => response.json());
       if (
         this.name !== "" &&
-        this.phoneNumber !== "" &&
+        this.phone_number !== "" &&
         this.parent !== "" &&
         this.groupSelect !== "" &&
         this.courseSelect !== "" &&
         this.teacherSelect !== ""
       ) {
-        this.initialGroups.forEach((item) => {
+        this.groups.forEach((item) => {
           if (item.title == this.groupSelect) {
             this.teachers.forEach((teacher) => {
               if (teacher.value == this.teacherSelect) {
@@ -216,12 +158,9 @@ export default {
               }
             });
             item.students.push(newObj);
+            this.postStudent(item);
           }
         });
-        this.data.push(newObj);
-        localStorage.setItem("students", JSON.stringify(this.data));
-        localStorage.setItem("teachers", JSON.stringify(this.teachers));
-        localStorage.setItem("groups", JSON.stringify(this.initialGroups));
         this.name = "";
         this.phoneNumber = "";
         this.parent = "";
@@ -231,64 +170,80 @@ export default {
         alert("Iltimos, hammasini toldiring!");
       }
     },
-    saveDataToLocalStorage() {
-      localStorage.setItem("students", JSON.stringify(this.data));
-      localStorage.setItem("groups", JSON.stringify(this.initialGroups));
-    },
-    handleChange() {
-      localStorage.setItem("course-val", JSON.stringify(this.courseSelect));
-      const filteredGroups = this.initialGroups.filter((item) => {
-        return item.cat == this.courseSelect;
+    postCourse() {
+      this.courses.forEach((course) => {
+        fetch("http://django-admin.uz/api/courses/create/", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${this.token}`,
+            "Content-type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify(course),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            console.log("Item: ", data);
+          })
+          .catch((error) => {
+            console.error(error);
+          });
       });
-      this.filteredGroups = filteredGroups;
-      localStorage.setItem("filtered-groups", JSON.stringify(filteredGroups));
     },
-    handleChangeGroup() {
-      localStorage.setItem("group-select", JSON.stringify(this.groupSelect));
+    getCourse() {
+      fetch("http://django-admin.uz/api/courses/all/", {
+        headers: {
+          Authorization: `Bearer ${this.token}`,
+          "Content-type": "application/json",
+        },
+        credentials: "include",
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          this.courses = data;
+          this.courses = this.courses.slice(0, 3);
+        });
     },
-    handleTeacherChange() {
-      localStorage.setItem("teacher-val", JSON.stringify(this.teacherSelect));
+    getMentors() {
+      fetch("http://django-admin.uz/api/customer/mentors/all/", {
+        headers: {
+          Authorization: `Bearer ${this.token}`,
+          "Content-type": "application/json",
+        },
+        credentials: "include",
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          this.teachers = data;
+          console.log(this.teachers);
+        });
+    },
+    getGroups() {
+      fetch("http://django-admin.uz/api/groups/all/", {
+        headers: {
+          Authorization: `Bearer ${this.token}`,
+          "Content-type": "application/json",
+        },
+        credentials: "include",
+      })
+        .then((response) => response.json())
+        .then((response) => {
+          this.groups = response.data;
+          console.log("Groups:", this.groups);
+        });
+    },
+    postStudent(obj) {
+      console.log(obj);
     },
   },
   mounted() {
-    localStorage.setItem("groups", JSON.stringify(this.initialGroups));
-    const getedGroups = JSON.parse(localStorage.getItem("groups"));
-    if (getedGroups) {
-      this.initialGroups = getedGroups;
+    let count = 1;
+    for (let i = 0; i < count; i++) {
+      this.postCourse();
     }
-    const filteredGroupsFromStorage = JSON.parse(
-      localStorage.getItem("filtered-groups")
-    );
-    if (filteredGroupsFromStorage) {
-      this.filteredGroups = filteredGroupsFromStorage;
-    }
-
-    // Selected Course
-    const selectedCourseFromStorage = JSON.parse(
-      localStorage.getItem("course-val")
-    );
-    if (selectedCourseFromStorage) {
-      this.courseSelect = selectedCourseFromStorage;
-    }
-
-    // Selected Groups
-    const selectedGroup = JSON.parse(localStorage.getItem("group-select"));
-    if (selectedGroup) {
-      this.groupSelect = selectedGroup;
-    }
-
-    // Course Set
-    localStorage.setItem("courses", JSON.stringify(this.courses));
-
-    // Teacher
-    const storedTeachers = JSON.parse(localStorage.getItem("teachers"));
-    if (storedTeachers) {
-      this.teachers = storedTeachers;
-    }
-    const storedTeacherValue = JSON.parse(localStorage.getItem("teacher-val"));
-    if (storedTeacherValue) {
-      this.teacherSelect = storedTeacherValue;
-    }
+    this.getCourse();
+    this.getGroups();
+    this.getMentors();
   },
 };
 </script>

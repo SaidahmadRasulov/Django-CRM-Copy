@@ -58,12 +58,13 @@ export default {
         });
         const response_data = await response.json();
 
+        localStorage.setItem('refresh-token', response_data.refresh)
         localStorage.setItem("token", response_data.access);
 
         login.value = true;
         localStorage.setItem("login", JSON.stringify(login.value));
 
-        console.log(response_data);
+        console.log(response_data.access);
         await router.push("/");
         await window.location.reload();
       } catch (error) {

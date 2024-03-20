@@ -1,12 +1,15 @@
 <template>
   <div>
     <div class="form_add bg-blue p-4 rounded-md shadow-lg">
-      <h2 class="text-xl text-white">Guruh qo'shish</h2>
+      <h2 class="text-xl text-white mb-6">Guruh qo'shish</h2>
       <div class="mb-6">
+        <label for="group_title" class="text-white text-xl"
+          >Guruh nomini kiriting</label
+        >
         <input
           type="text"
+          id="group_title"
           v-model="group_add"
-          placeholder="Guruh nomini kiriting"
           class="w-full py-2 px-4 outline-none mt-4 rounded-md"
         />
       </div>
@@ -17,12 +20,12 @@
           class="w-full my-2 p-2 outline-none rounded-md"
           v-model="course_select"
         >
-          <option value="dev">Dasturlash</option>
-          <option value="des">Grafik Dizayn</option>
-          <option value="py">Python</option>
+          <option :value="item" v-for="item in this.storedCourses">
+            {{ item.title }}
+          </option>
         </select>
       </div>
-      <div class="mb-6">
+      <div class="mb-2">
         <label for="select" class="text-xl text-white">O'qish Kunlari</label>
         <select
           id="select"
@@ -31,6 +34,21 @@
         >
           <option :value="day.title" v-for="day in this.study_days">
             {{ day.title }}
+          </option>
+        </select>
+      </div>
+      <div class="mb-6">
+        <label for="select" class="text-xl text-white">Mentor</label>
+        <select
+          id="select"
+          class="w-full my-2 p-2 outline-none rounded-md"
+          v-model="mentor_select"
+        >
+          <option
+            :value="mentor"
+            v-for="mentor in this.mentors"
+          >
+            {{ mentor.fullname }}
           </option>
         </select>
       </div>
@@ -50,9 +68,11 @@ export default {
   data() {
     return {
       group_add: "",
-      storedGroups: [],
-      storedLoad: null,
-      course_select: "",
+      token: localStorage.getItem("token"),
+      storedCourses: [],
+      course_select: {},
+      mentors: [],
+      mentor_select: "",
       study_select: "",
       study_days: [
         {
@@ -72,13 +92,16 @@ export default {
       let new_group = {
         id: parseInt(Date.now().toString().slice(1, 5)),
         title: this.group_add,
-        cat: this.course_select,
+        course: this.course_select.id,
         students: [],
         studyDay: this.study_select,
+        val: this.course_select.val,
+        mentor: this.mentor_select.id,
+        mentor_info: this.mentor_select,
       };
       if (
         new_group.title !== "" &&
-        new_group.cat !== "" &&
+        new_group.course !== "" &&
         new_group.studyDay !== ""
       ) {
         try {
@@ -94,11 +117,12 @@ export default {
             }
           );
           alert("Guruh muvafaqiyatli koshildi");
+          // window.location.reload()
           this.course_select = "";
           this.group_add = "";
           this.study_days = "";
+          console.log("Response !!", response.json());
         } catch (error) {
-          // Handle network error
           console.error("Network error:", error);
           alert("Network Error: Failed to create group");
         }
@@ -106,24 +130,39 @@ export default {
         alert("Iltimos barcha ma'lumotlarni kiriting");
       }
     },
+    getCourses() {
+      fetch("http://django-admin.uz/api/courses/all/", {
+        headers: {
+          Authorization: `Bearer ${this.token}`,
+          "Content-type": "application/json",
+        },
+        credentials: "include",
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          this.storedCourses = data;
+          this.storedCourses = this.storedCourses.slice(0, 3);
+        });
+    },
+    getMentors() {
+      fetch("http://django-admin.uz/api/customer/mentors/all/", {
+        headers: {
+          Authorization: `Bearer ${this.token}`,
+          "Content-type": "application/json",
+        },
+        credentials: "include",
+      })
+        .then((response) => response.json())
+        .then((response) => {
+          this.mentors = response;
+          console.log(this.mentors);
+        });
+    },
   },
-  // mounted() {
-  //   const getedGroups = JSON.parse(localStorage.getItem("groups"));
-  //   if (getedGroups) {
-  //     this.storedGroups = getedGroups;
-  //     console.log(this.storedGroups);
-  //   } else if (this.handleGroupAdd()) {
-  //     console.log("changed");
-  //   }
-  //   const loadedPage = JSON.parse(localStorage.getItem("loaded"));
-  //   if (loadedPage) {
-  //     this.storedLoad = loadedPage;
-  //   }
-  //   fetch("http://admin.djangoacademy.uz/api/courses/all/", {
-  //     headers: { "Content-type": "application/json" },
-  //     credentials: "include",
-  //   }).then((res) => console.log(res.json()));
-  // },
+  mounted() {
+    this.getCourses();
+    this.getMentors();
+  },
 };
 </script>
 <style lang=""></style>

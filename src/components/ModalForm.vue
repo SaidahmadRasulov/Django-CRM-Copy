@@ -18,7 +18,7 @@
           name="fullname"
           id="name"
           class="p-2 px-5 rounded-md outline-none"
-          v-model="name"
+          v-model="fullname"
           autocomplete="false"
         />
       </div>
@@ -29,7 +29,7 @@
           name="phone"
           id="phone"
           class="p-2 px-5 rounded-md outline-none w-full mt-3"
-          v-model="phoneNumber"
+          v-model="phone_number"
           autocomplete="false"
         />
       </div>
@@ -39,7 +39,7 @@
         >
         <textarea
           id="parent"
-          v-model="parent"
+          v-model="parents"
           class="resize-none h-20 p-2 mt-3 outline-none rounded-md"
         ></textarea>
       </div>
@@ -49,10 +49,9 @@
           <select
             id="group"
             class="px-2 py-1 rounded-md outline-none cursor-pointer"
-            @change="handleChangeGroup"
             v-model="groupSelect"
           >
-            <option :value="item.title" v-for="item in filteredGroups">
+            <option :value="item" v-for="item in this.groups">
               {{ item.title }}
             </option>
           </select>
@@ -63,9 +62,8 @@
             id="course"
             class="px-2 py-1 rounded-md outline-none cursor-pointer"
             v-model="courseSelect"
-            @change="handleChange"
           >
-            <option v-for="item in courses" :value="item.val">
+            <option v-for="item in courses" :value="item">
               {{ item.title }}
             </option>
           </select>
@@ -73,7 +71,7 @@
       </div>
       <div class="text-end mt-4">
         <button
-          @click="handleAdd"
+          @click="handleEdit"
           class="mx-4 bg-green-700 text-white rounded-md p-2 px-4 hover:bg-white border border-green-700 hover:text-green-700 transition-all delay-75 mt-4"
         >
           O'zgartirish
@@ -89,48 +87,120 @@ export default {
     return {
       toggleEdit: false,
       courses: [],
-      courseSelect: "dev",
-      editObj: {},
-      filteredGroups: [],
+      courseSelect: "",
+      token: localStorage.getItem("token"),
+      editedObj: {},
+      editing_obj: {},
+      groups: [],
       groupSelect: "",
-      name: "",
-      parent: "",
-      phoneNumber: "",
+      fullname: "",
+      parents: "",
+      phone_number: "",
     };
   },
-  mounted() {
-    const storedModal = JSON.parse(localStorage.getItem("modal"));
-    if (storedModal !== null) {
-      this.toggleEdit = storedModal;
-    } else {
-      this.toggleEdit = false;
-      localStorage.setItem("modal", JSON.stringify(this.toggleEdit));
-    }
-    const storedCourses = JSON.parse(localStorage.getItem("courses"));
-    if (storedCourses) {
-      this.courseSelect = storedCourses;
-    }
-    const storedEditObj = JSON.parse(localStorage.getItem("editObj"));
-    if (storedEditObj !== null) {
-      this.editObj = storedEditObj;
-      this.name = this.editObj.name;
-      this.phoneNumber = this.editObj.phoneNumber;
-      this.parent = this.editObj.parents;
-      this.groupSelect = this.editObj.group;
-    }
-    const storedGroups = JSON.parse(localStorage.getItem("groups"));
-    if (storedGroups) {
-      this.filteredGroups = storedCourses;
-    }
-  },
-
   methods: {
     handleCancelEdit() {
       this.toggleEdit = !this.toggleEdit;
       console.log(this.toggleEdit);
       localStorage.setItem("modal", JSON.stringify(this.toggleEdit));
     },
+    async handleEdit() {
+      const editedData = {
+        fullname: this.fullname,
+        parents: this.parents,
+        phone_number: this.phone_number,
+        course: this.courseSelect.id,
+        group: this.groupSelect.id,
+      };
+
+      if (
+        this.fullname !== "" &&
+        this.parents !== "" &&
+        this.phone_number !== "" &&
+        this.courseSelect !== "" &&
+        this.groupSelect !== ""
+      ) {
+        try {
+          const response = await fetch(
+            `http://django-admin.uz/api/customer/students/${this.editing_obj.id}/update/`,
+            {
+              method: "PATCH",
+              headers: {
+                Authorization: `Bearer ${this.token}`,
+                "Content-type": "application/json",
+              },
+              body: JSON.stringify(editedData),
+            }
+          );
+
+          if (response.ok) {
+            console.log("Data updated successfully");
+          } else {
+            console.error("Failed to update data:", response.statusText);
+          }
+        } catch (error) {
+          console.error("Error:", error);
+        }
+        console.log(editedData)
+      } else {
+        console.error("Please fill all required fields");
+      }
+    },
+
+    getGroups() {
+      fetch("http://django-admin.uz/api/groups/all/", {
+        headers: {
+          Authorization: `Bearer ${this.token}`,
+          "Content-type": "application/json",
+        },
+        credentials: "include",
+      })
+        .then((response) => response.json())
+        .then((response) => {
+          this.groups = response.data;
+          console.log("Modal Groups:", this.groups);
+        });
+    },
+    getCourse() {
+      fetch("http://django-admin.uz/api/courses/all/", {
+        headers: {
+          Authorization: `Bearer ${this.token}`,
+          "Content-type": "application/json",
+        },
+        credentials: "include",
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          this.courses = data.slice(0, 3);
+          console.log(this.courses);
+        });
+    },
+    getObject() {
+      const storedEditObj = JSON.parse(localStorage.getItem("edit_obj"));
+      if (storedEditObj !== null) {
+        this.editing_obj = storedEditObj;
+        this.fullname = storedEditObj.fullname;
+        this.phone_number = storedEditObj.phone_number;
+        this.parents = storedEditObj.parents;
+        this.groupSelect = storedEditObj.group_info.title;
+        this.courseSelect = storedEditObj.course_info.val;
+      }
+    },
+    getModalChanges() {
+      const storedModal = JSON.parse(localStorage.getItem("modal"));
+      if (storedModal !== null) {
+        this.toggleEdit = storedModal;
+      } else {
+        this.toggleEdit = false;
+        localStorage.setItem("modal", JSON.stringify(this.toggleEdit));
+      }
+    },
+  },
+  mounted() {
+    this.getObject();
+    this.getGroups();
+    this.getCourse();
+    this.getModalChanges();
   },
 };
 </script>
-<style lang=""></style>

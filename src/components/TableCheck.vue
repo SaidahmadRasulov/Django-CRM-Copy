@@ -17,7 +17,7 @@
       class="flex items-center gap-4 justify-around flex-wrap h-[600px] p-4 overflow-y-scroll"
     >
       <div class="card_content flex w-1/4" v-for="item in filteredGroups">
-        <Card :item="item" :key="item.id" />
+        <Card :item="item" :key="item.id" :path="this.path" />
       </div>
     </div>
   </div>
@@ -32,24 +32,38 @@ export default {
       groupsSelect: "all",
       groupsRender: [],
       filteredGroups: [],
+      path: "groups",
+      token: localStorage.getItem("token"),
     };
   },
   mounted() {
-    const getedData = JSON.parse(localStorage.getItem("groups"));
-    if (getedData) {
-      this.groupsRender = getedData;
-      this.filteredGroups = getedData;
-    }
+    this.getGroups();
   },
   methods: {
+    async getGroups() {
+      const response = await fetch("http://django-admin.uz/api/groups/all/", {
+        headers: {
+          Authorization: `Bearer ${this.token}`,
+          "Content-type": "application/json",
+        },
+        credentials: "include",
+      })
+        .then((response) => response.json())
+        .then((response) => {
+          this.groupsRender = response.data;
+          console.log(this.groupsRender);
+          // Call the filter method after data is fetched
+          this.handleFilterGroups();
+        });
+    },
     handleFilterGroups() {
-      if (this.groupsSelect === "all") {
-        this.filteredGroups = this.groupsRender;
-      } else {
-        this.filteredGroups = this.groupsRender.filter(
-          (item) => item.cat === this.groupsSelect
-        );
-      }
+      this.filteredGroups = this.groupsRender.filter((item) => {
+        if (this.groupsSelect == "all") {
+          return true; // Return all items
+        } else {
+          return item.course_info.val == this.groupsSelect;
+        }
+      });
     },
   },
   components: { Card },
