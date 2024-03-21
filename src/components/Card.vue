@@ -6,7 +6,7 @@
     <div class="card_body p-4">
       <h1 class="text-2xl">Guruh Raqami: {{ item.title }}</h1>
       <h2>O'quvchilar Soni: {{ item.students_count }}</h2>
-      <h2>O'qish kunlari: {{ item.studyDay }}</h2>
+      <h2>O'qish kunlari: {{ item.study_day }}</h2>
     </div>
     <div class="card_footer p-4 text-end">
       <RouterLink :to="`/${this.path}/${item.title}`">
@@ -34,7 +34,7 @@ export default {
     },
   },
   mounted() {
-    console.log(this.item);
+    console.log("Obyekt: ", this.item);
   },
   components: { RouterLink },
 };

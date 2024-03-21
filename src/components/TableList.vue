@@ -102,7 +102,7 @@ export default {
         .then((response) => response.json())
         .then((response) => {
           this.students = response.data;
-          console.log("Students: ",this.students);
+          console.log("Students: ", this.students);
         });
     },
     handleEdit(obj) {
@@ -110,11 +110,40 @@ export default {
       localStorage.setItem("modal", JSON.stringify(this.toggleShow));
       this.editObj = obj;
       localStorage.setItem("edit_obj", JSON.stringify(this.editObj));
+      window.location.reload();
+    },
+    async handleDelete(id) {
+      let confirm = window.confirm("O'chirilishiga rozimisz?");
+      if (confirm) {
+        const response = await fetch(
+          `http://django-admin.uz/api/customer/students/${id}/delete/`,
+          {
+            method: "DELETE",
+            headers: {
+              Authorization: `Bearer ${this.token}`,
+              "Content-type": "application/json",
+            },
+          }
+        );
+        if (response.ok) {
+          alert("Muvafaqiyatli ochirildi");
+          window.location.reload();
+        }
+        console.log(response.json());
+      } else {
+        alert("O'chirilish amalga oshirilmadi.")
+      }
     },
   },
   mounted() {
     this.getStudents();
+    this.toggleShow = JSON.parse(localStorage.getItem("modal")) || false; // Set default value if no value found in localStorage
     console.log(this.toggleShow);
+  },
+  watch: {
+    toggleShow: function (newToggleShow) {
+      localStorage.setItem("modal", JSON.stringify(newToggleShow));
+    },
   },
   computed: {
     filteredStudents() {

@@ -71,8 +71,8 @@ export default {
     };
   },
   methods: {
-    async getCourse() {
-      const response = await fetch("http://django-admin.uz/api/courses/all/", {
+    getCourse() {
+      fetch("http://django-admin.uz/api/courses/all/", {
         headers: {
           Authorization: `Bearer ${this.token}`,
           "Content-type": "application/json",
@@ -112,7 +112,12 @@ export default {
             }
           );
           alert("Mentor muvafaqiyatli koshildi");
-          console.log(response.json());
+          this.fullname = "";
+          this.phone_number = "";
+          this.birthday = "";
+          this.user_location = "";
+          this.course_select = "";
+          window.location.reload();
         } catch (error) {
           console.log(error);
         }

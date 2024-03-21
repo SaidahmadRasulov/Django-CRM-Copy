@@ -1,18 +1,12 @@
 <template>
   <div>
-    <Registration :data="data" />
+    <Registration />
   </div>
 </template>
 <script>
 import Registration from "../components/Registration.vue";
 
 export default {
-  props: {
-    data: {
-      type: Array,
-      required: true,
-    },
-  },
   components: { Registration },
 };
 </script>

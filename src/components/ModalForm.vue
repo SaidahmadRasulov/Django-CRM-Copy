@@ -134,14 +134,14 @@ export default {
           );
 
           if (response.ok) {
-            console.log("Data updated successfully");
+            alert("O'zgarish muvofaqiyatli bajarildi!");
           } else {
             console.error("Failed to update data:", response.statusText);
           }
         } catch (error) {
           console.error("Error:", error);
         }
-        console.log(editedData)
+        console.log(editedData);
       } else {
         console.error("Please fill all required fields");
       }
@@ -190,6 +190,9 @@ export default {
       const storedModal = JSON.parse(localStorage.getItem("modal"));
       if (storedModal !== null) {
         this.toggleEdit = storedModal;
+        // window.location.reload();
+        localStorage.setItem("modal", JSON.stringify(this.toggleEdit));
+
       } else {
         this.toggleEdit = false;
         localStorage.setItem("modal", JSON.stringify(this.toggleEdit));

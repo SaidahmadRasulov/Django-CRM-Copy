@@ -10,7 +10,11 @@
             <h1>№</h1>
             <h1>ism</h1>
           </div>
-          <div v-for="(student, index) in item.students" :key="student.id" class="flex gap-10">
+          <div
+            v-for="(student, index) in item.students"
+            :key="student.id"
+            class="flex gap-10"
+          >
             <h1>{{ index + 1 }}</h1>
             <h1>{{ student.name }}</h1>
           </div>
@@ -24,16 +28,52 @@
 export default {
   data() {
     return {
-      title: "",
+      title: this.$route.params.title,
+      takedGroup: {},
+      group: {},
       groupRender: [],
+      token: localStorage.getItem("token"),
     };
   },
+  methods: {
+    selectedGroup() {
+      this.groupRender = this.groupRender.filter((item) => {
+        if (item.title == this.title) {
+          this.takedGroup = item;
+          console.log(this.takedGroup);
+        }
+      });
+    },
+    getGroup() {
+      fetch(`http://django-admin.uz/api/groups/${this.takedGroup.id}/`, {
+        headers: {
+          Authorization: `Bearer ${this.token}`,
+          "Content-type": "application/json",
+        },
+        credentials: "include",
+      })
+        .then((response) => response.json())
+        .then((response) => console.log(response));
+    },
+    getGroups() {
+      fetch("http://django-admin.uz/api/groups/all/", {
+        headers: {
+          Authorization: `Bearer ${this.token}`,
+          "Content-type": "application/json",
+        },
+        credentials: "include",
+      })
+        .then((response) => response.json())
+        .then((response) => {
+          this.groupRender = response.data;
+          this.selectedGroup();
+          console.log(this.groupRender);
+          this.getGroup()
+        });
+    },
+  },
   mounted() {
-    this.title = this.$route.params.title;
-    const storedGroups = localStorage.getItem("groups");
-    if (storedGroups) {
-      this.groupRender = JSON.parse(storedGroups);
-    }
+    this.getGroups();
   },
 };
 </script>

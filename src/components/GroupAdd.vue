@@ -32,7 +32,7 @@
           class="w-full my-2 p-2 outline-none rounded-md"
           v-model="study_select"
         >
-          <option :value="day.title" v-for="day in this.study_days">
+          <option :value="day.val" v-for="day in this.study_days">
             {{ day.title }}
           </option>
         </select>
@@ -44,10 +44,7 @@
           class="w-full my-2 p-2 outline-none rounded-md"
           v-model="mentor_select"
         >
-          <option
-            :value="mentor"
-            v-for="mentor in this.mentors"
-          >
+          <option :value="mentor" v-for="mentor in this.mentors">
             {{ mentor.fullname }}
           </option>
         </select>
@@ -78,10 +75,12 @@ export default {
         {
           id: 1,
           title: "Dushanba, Chorshanba, Juma",
+          val: 'juft'
         },
         {
           id: 2,
           title: "Seyshanba, Payshanba, Shanba",
+          val: 'toq'
         },
       ],
     };
@@ -117,10 +116,11 @@ export default {
             }
           );
           alert("Guruh muvafaqiyatli koshildi");
-          // window.location.reload()
+          window.location.reload()
           this.course_select = "";
           this.group_add = "";
           this.study_days = "";
+          this.mentor_select = "";
           console.log("Response !!", response.json());
         } catch (error) {
           console.error("Network error:", error);

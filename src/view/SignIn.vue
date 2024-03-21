@@ -37,7 +37,6 @@ export default {
   mounted() {
     let visibility = JSON.parse(localStorage.getItem("visibility"));
     this.storedVisibility = visibility;
-    console.log(this.storedVisibility);
   },
   setup() {
     const data = reactive({

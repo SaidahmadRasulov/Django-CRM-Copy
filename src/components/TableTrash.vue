@@ -32,7 +32,7 @@ export default {
       groupsSelect: "all",
       groupsRender: [],
       filteredGroups: [],
-      path: "payment",
+      path: "payments",
       token: localStorage.getItem("token"),
     };
   },
@@ -51,8 +51,7 @@ export default {
         .then((response) => response.json())
         .then((response) => {
           this.groupsRender = response.data;
-          console.log(this.groupsRender);
-          // Call the filter method after data is fetched
+          console.log("Group Render: ",this.groupsRender);
           this.handleFilterGroups();
         });
     },

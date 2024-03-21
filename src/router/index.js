@@ -3,6 +3,7 @@ import Home from "../view/Home.vue";
 import StudentsCheking from "../view/StudentsCheking.vue";
 import Students from "../view/Students.vue";
 import Payments from "../view/Payments.vue";
+import PaymentGroup from "../components/PaymentGroup.vue";
 import CompletedPage from "../view/CompletedPage.vue";
 import GroupsAbout from "../view/GroupsAbout.vue";
 import Mentors from "../view/Mentors.vue";
@@ -29,6 +30,11 @@ const router = createRouter({
       component: Payments,
     },
     {
+      name: "paymentsAbout",
+      path: "/payments/:title",
+      component: PaymentGroup,
+    },
+    {
       name: "students",
       path: "/students",
       component: Students,
@@ -50,7 +56,7 @@ const router = createRouter({
     },
     {
       name: "mentorsAbout",
-      path: "/mentors/:name",
+      path: "/mentors/:id",
       component: MentorAbout,
     },
     {

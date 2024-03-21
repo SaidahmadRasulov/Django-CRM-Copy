@@ -12,14 +12,28 @@ import MentorCard from "../components/MentorCard.vue";
 export default {
   data() {
     return {
+      token: localStorage.getItem("token"),
       mentors: [],
     };
   },
+  methods: {
+    getMentors() {
+      fetch("http://django-admin.uz/api/customer/mentors/all/", {
+        headers: {
+          Authorization: `Bearer ${this.token}`,
+          "Content-type": "application/json",
+        },
+        credentials: "include",
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          this.mentors = data;
+          console.log(this.mentors);
+        });
+    },
+  },
   mounted() {
-    const storedMentors = JSON.parse(localStorage.getItem("teachers"));
-    if (storedMentors) {
-      this.mentors = storedMentors;
-    }
+    this.getMentors();
   },
   components: { MentorCard },
 };

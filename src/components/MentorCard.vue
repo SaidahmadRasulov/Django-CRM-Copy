@@ -4,11 +4,12 @@
       <img class="w-full" src="../assets/cartImage.jpg" alt="" />
     </div>
     <div class="mentor_card_body">
-      <h1 class="text-2xl mb-2">{{ teacher.name }}</h1>
-      <h2 class="text-xl mb-2">{{ teacher.teacher }}</h2>
-      <h2 class="text-xl mb-2">Guruhlar soni: {{ teacher.groups.length }}</h2>
-      <h2 class="text-xl">Yashash Manzili: {{ teacher.address }}</h2>
-      <RouterLink :to="`/mentors/${teacher.name}`">
+      <h1 class="text-2xl mb-2">{{ teacher.fullname }}</h1>
+      <h2 class="text-xl mb-2">Telefon raqam: {{ teacher.phone_number }}</h2>
+      <h2 class="text-xl mb-2">Tugulgan kuni: {{ teacher.birthday }}</h2>
+      <h2 class="text-xl">Yashash Manzili: {{ teacher.location }}</h2>
+      <h2 class="text-xl mb-2">Guruhlar soni: {{ teacher.group_count }}</h2>
+      <RouterLink :to="`/mentors/${teacher.id}`">
         <button
           class="py-1 mt-4 px-4 rounded-md bg-blue hover:bg-transparent hover:text-blue text-lg text-white transition-all delay-75 border border-blue"
         >

@@ -22,6 +22,17 @@
         autocomplete="false"
       />
     </div>
+    <div class="mb-6">
+      <label for="phone" class="text-xl text-white">Qayerdan Kelgan</label>
+      <input
+        type="text"
+        name="phone"
+        id="phone"
+        class="p-2 px-5 rounded-md outline-none w-full mt-3"
+        v-model="coming"
+        autocomplete="false"
+      />
+    </div>
     <div class="mb-6 flex flex-col">
       <label for="parent" class="text-xl text-white"
         >Ota-onasining ism-sharifi va tel raqami</label
@@ -82,21 +93,18 @@
 </template>
 <script>
 export default {
-  props: {
-    data: {
-      type: Array,
-      required: true,
-    },
-  },
   data() {
     return {
       name: "",
       phoneNumber: "",
+      coming: "",
       token: localStorage.getItem("token"),
       course: {},
       courseSelect: "",
       groupSelect: "",
       teachers: [],
+      storedRequest: null,
+      requestSent: false,
       teacherSelect: "",
       parent: "",
       courses: [
@@ -130,6 +138,7 @@ export default {
         course: this.courseSelect.id,
         mentor: this.teacherSelect,
         deleted: false,
+        coming: this.coming,
       };
       const response = await fetch(
         "http://django-admin.uz/api/customer/students/create/",
@@ -148,7 +157,8 @@ export default {
         this.parent !== "" &&
         this.groupSelect !== "" &&
         this.courseSelect !== "" &&
-        this.teacherSelect !== ""
+        this.teacherSelect !== "" &&
+        this.coming !== ""
       ) {
         this.groups.forEach((item) => {
           if (item.title == this.groupSelect) {
@@ -164,32 +174,39 @@ export default {
         this.name = "";
         this.phoneNumber = "";
         this.parent = "";
-        this.group = "";
-        this.course = "";
+        this.groupSelect = "";
+        this.courseSelect = "";
+        this.teacherSelect = "";
+        alert("O'quvchi muvofaqqiyatli qoshildi!");
       } else {
         alert("Iltimos, hammasini toldiring!");
       }
     },
     postCourse() {
-      this.courses.forEach((course) => {
-        fetch("http://django-admin.uz/api/courses/create/", {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${this.token}`,
-            "Content-type": "application/json",
-          },
-          credentials: "include",
-          body: JSON.stringify(course),
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            console.log("Item: ", data);
+      if (!this.storedRequest) {
+        this.courses.forEach((course) => {
+          fetch("http://django-admin.uz/api/courses/create/", {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${this.token}`,
+              "Content-type": "application/json",
+            },
+            credentials: "include",
+            body: JSON.stringify(course),
           })
-          .catch((error) => {
-            console.error(error);
-          });
-      });
+            .then((response) => response.json())
+            .then((data) => {
+              console.log("Course: ", data);
+            })
+            .catch((error) => {
+              console.error(error);
+            });
+        });
+        this.storedRequest = true;
+        localStorage.setItem("request", JSON.stringify(this.storedRequest));
+      }
     },
+
     getCourse() {
       fetch("http://django-admin.uz/api/courses/all/", {
         headers: {
@@ -237,13 +254,14 @@ export default {
     },
   },
   mounted() {
-    let count = 1;
-    for (let i = 0; i < count; i++) {
-      this.postCourse();
-    }
     this.getCourse();
     this.getGroups();
     this.getMentors();
+    const gettedRequest = JSON.parse(localStorage.getItem("request"));
+    this.storedRequest = gettedRequest;
+    if (!this.storedRequest) {
+      this.postCourse();
+    }
   },
 };
 </script>
