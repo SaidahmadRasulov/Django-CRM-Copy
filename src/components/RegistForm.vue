@@ -40,7 +40,7 @@
       <textarea
         id="parent"
         v-model="parent"
-        class="resize-none h-20 p-2 mt-3 outline-none rounded-md"
+        class="resize-none h-10 p-2 mt-3 outline-none rounded-md"
       ></textarea>
     </div>
     <div class="flex items-center gap-4 justify-between">

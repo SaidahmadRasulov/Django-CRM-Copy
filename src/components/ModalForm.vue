@@ -103,6 +103,7 @@ export default {
       this.toggleEdit = !this.toggleEdit;
       console.log(this.toggleEdit);
       localStorage.setItem("modal", JSON.stringify(this.toggleEdit));
+      window.location.reload()
     },
     async handleEdit() {
       const editedData = {

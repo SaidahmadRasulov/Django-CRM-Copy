@@ -1,5 +1,5 @@
 <template>
-  <section class="mt-3 w-4/5 mx-auto h-[600px]">
+  <section class="mt-3 w-full mx-auto h-[600px]">
     <div class="select_box text-end">
       <select
         id="select"

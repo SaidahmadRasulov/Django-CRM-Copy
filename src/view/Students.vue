@@ -10,12 +10,6 @@
 <script>
 import TableList from "../components/TableList.vue";
 export default {
-  props: {
-    data: {
-      type: Array,
-      required: true,
-    },
-  },
   components: {
     TableList,
   },
