@@ -12,42 +12,35 @@
 <script>
 import LayoutNavbar from "./components/layout/LayoutNavbar.vue";
 import { RouterView, useRouter } from "vue-router";
-import { onMounted, ref } from "vue";
+import { onMounted, ref, watchEffect, onUnmounted } from "vue";
 import SignIn from "./view/SignIn.vue";
 
 export default {
-  data() {
-    return {
-      visibility: false,
-    };
-  },
-  watch: {
-    data: {
-      handler(newData) {
-        localStorage.setItem("students", JSON.stringify(newData));
-      },
-      deep: true,
-    },
-    visibility: {
-      handler(newValue) {
-        localStorage.setItem("visibility", JSON.stringify(newValue));
-      },
-      deep: true,
-    },
-  },
-  mounted() {
-    const logged = JSON.parse(localStorage.getItem("login"));
-    const router = useRouter();
-    if (logged) {
-      this.visibility = true;
-      localStorage.setItem("visibility", JSON.stringify(this.visibility));
-    } else {
-      this.visibility = false;
-      localStorage.setItem("visibility", JSON.stringify(this.visibility));
-      router.push("/signin");
-    }
-  },
   setup() {
+    const visibility = ref(false);
+    const router = useRouter();
+
+    onMounted(() => {
+      const logged = JSON.parse(localStorage.getItem("login"));
+      if (logged) {
+        visibility.value = true;
+        localStorage.setItem("visibility", JSON.stringify(visibility.value));
+        const timer = setTimeout(() => {
+          visibility.value = false;
+          localStorage.setItem("visibility", JSON.stringify(visibility.value));
+          router.push("/signin");
+        }, 5 * 60 * 60 * 1000);
+
+        onUnmounted(() => {
+          clearTimeout(timer);
+        });
+      } else {
+        visibility.value = false;
+        localStorage.setItem("visibility", JSON.stringify(visibility.value));
+        router.push("/signin");
+      }
+    });
+
     onMounted(async () => {
       const token = localStorage.getItem("token");
       if (!token) {
@@ -55,6 +48,8 @@ export default {
         return;
       }
     });
+
+    return { visibility };
   },
   components: { LayoutNavbar, RouterView, SignIn },
 };

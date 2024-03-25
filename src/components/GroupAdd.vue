@@ -1,19 +1,17 @@
 <template>
   <div>
     <div class="form_add bg-blue p-4 rounded-md shadow-lg">
-      <h2 class="text-xl text-white mb-6">Guruh qo'shish</h2>
-      <div class="mb-6">
-        <label for="group_title" class="text-white text-xl"
-          >Guruh nomini kiriting</label
-        >
+      <h2 class="text-xl text-white mb-3">Guruh qo'shish</h2>
+      <div class="mb-2">
         <input
+        placeholder="Guruh nomini kiriting"
           type="text"
           id="group_title"
           v-model="group_add"
-          class="w-full py-2 px-4 outline-none mt-4 rounded-md"
+          class="w-full py-2 px-4 outline-none mt-4 rounded-md placeholder:text-lg"
         />
       </div>
-      <div class="mb-6">
+      <div class="mb-2">
         <label for="select" class="text-xl text-white">Kursni Tanlang</label>
         <select
           id="select"
@@ -36,6 +34,14 @@
             {{ day.title }}
           </option>
         </select>
+      </div>
+      <div class="mb-4">
+        <input
+          type="number"
+          placeholder="O'qishning Davomligi"
+          v-model="group_continue"
+          class="w-full py-2 px-4 outline-none mt-4 rounded-md placeholder:text-lg"
+        />
       </div>
       <div class="mb-6">
         <label for="select" class="text-xl text-white">Mentor</label>
@@ -65,6 +71,7 @@ export default {
   data() {
     return {
       group_add: "",
+      group_continue: "",
       token: localStorage.getItem("token"),
       storedCourses: [],
       course_select: {},
@@ -75,12 +82,12 @@ export default {
         {
           id: 1,
           title: "Dushanba, Chorshanba, Juma",
-          val: 'juft'
+          val: "juft",
         },
         {
           id: 2,
           title: "Seyshanba, Payshanba, Shanba",
-          val: 'toq'
+          val: "toq",
         },
       ],
     };
@@ -97,11 +104,13 @@ export default {
         val: this.course_select.val,
         mentor: this.mentor_select.id,
         mentor_info: this.mentor_select,
+        continuity: this.group_continue,
       };
       if (
         new_group.title !== "" &&
         new_group.course !== "" &&
-        new_group.studyDay !== ""
+        new_group.studyDay !== "" &&
+        new_group.continuity !== ""
       ) {
         try {
           const response = await fetch(
@@ -116,7 +125,7 @@ export default {
             }
           );
           alert("Guruh muvafaqiyatli koshildi");
-          window.location.reload()
+          window.location.reload();
           this.course_select = "";
           this.group_add = "";
           this.study_days = "";

@@ -11,12 +11,16 @@
       class="w-2/3 table-fixed mx-auto text-center border border-blue mt-10"
     >
       <thead>
-        <tr class="border bg-blue border-blue">
+        <tr class="border bg-blue border-blue text-white">
           <th class="px-4 py-2">#</th>
           <th class="px-4 py-2">Ism-sharifi</th>
           <th class="px-4 py-2 text-black">
-            <select v-model="payment_month" class="w-full">
-              <option v-for="item in looping">{{ item }}</option>
+            <select
+              v-model="payment_month"
+              class="w-full"
+              @change="console.log(payment_month.toString())"
+            >
+              <option v-for="item in looping" :value="item">{{ item }}</option>
             </select>
           </th>
           <th class="px-4 py-2">Amal</th>
@@ -33,13 +37,16 @@
           <td class="border px-4 py-2">{{ student.fullname }}</td>
           <td class="border">
             <input
-              type="number"
+              type="text"
               v-model="payment"
               class="w-full p-2 outline-none bg-transparent"
             />
           </td>
           <td class="border">
-            <button class="px-4 py-2 bg-green-700 text-white rounded-md">
+            <button
+              class="px-4 py-2 bg-green-700 text-white rounded-md"
+              @click="handlePayment(student)"
+            >
               To'lash
             </button>
           </td>
@@ -109,6 +116,23 @@ export default {
           console.log("All Groups: ", this.all_groups);
         });
     },
+    async handlePayment(student) {
+      let new_payment = {
+        student: student.id,
+        amount: this.payment,
+      };
+      const response = await fetch(
+        `http://django-admin.uz/api/payments/create/`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${this.token}`,
+            "Content-type": "application/json",
+          },
+          body: JSON.stringify(new_payment),
+        }
+      ).then((response) => console.log(response.json()));
+    },
   },
   mounted() {
     let taked_title = this.$route.params.title;
@@ -125,9 +149,11 @@ export default {
   },
   computed: {
     looping() {
+      const options = [];
       for (let i = 0; i < this.group.continuity; i++) {
-        console.log("Count")
+        options.push(i + 1);
       }
+      return options;
     },
   },
 };

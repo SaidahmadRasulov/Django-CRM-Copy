@@ -177,6 +177,7 @@ export default {
         this.groupSelect = "";
         this.courseSelect = "";
         this.teacherSelect = "";
+        this.coming = "";
         alert("O'quvchi muvofaqqiyatli qoshildi!");
       } else {
         alert("Iltimos, hammasini toldiring!");
