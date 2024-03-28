@@ -1,5 +1,5 @@
 <template>
-  <section class="w-full" v-if="this.group.status !== 'completed'">
+  <section class="w-full" v-if="group.status !== 'completed'">
     <div class="group_title">
       <h1 class="text-2xl">Guruh: {{ title }}</h1>
       <h1 class="text-xl">Guruhning statusi: {{ group.status }}</h1>
@@ -47,18 +47,18 @@
                 </button>
                 <button
                   class="bg-red-500 text-xl py-2 px-4 rounded-md"
-                  @click="handlePostfalse(student.id, false)"
+                  @click="handlePostTrue(student.id, false)"
                 >
                   <i class="bx bxs-x-circle"></i>
                 </button>
               </div>
               <button
                 class="shadow-lg p-2 px-4 rounded-md border-2 border-white"
-                v-if="student.attended != null"
+                v-if="student.attendances.attendated != null"
               >
                 <i
                   class="bx bxs-check-circle text-green-500"
-                  v-if="student.attended"
+                  v-if="student.attendances.attendated"
                 ></i>
                 <i class="bx bxs-x-circle text-red-500 text-xl" v-else></i>
               </button>
@@ -76,6 +76,7 @@
     <h1>Guruh o'qishni yakunlagan!</h1>
   </section>
 </template>
+
 
 <script>
 export default {
