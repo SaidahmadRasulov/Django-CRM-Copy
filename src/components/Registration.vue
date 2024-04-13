@@ -3,11 +3,8 @@
     <h1 class="text-2xl">O'quvchi qo'shish</h1>
     <div class="container mt-[2rem] flex gap-4">
       <RegistForm />
-      <div class="w-1/4">
+      <div class="w-2/4">
         <GroupAdd />
-      </div>
-      <div class="w-1/4">
-        <MentorAdd />
       </div>
     </div>
   </section>

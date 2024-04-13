@@ -43,18 +43,28 @@
           class="resize-none h-20 p-2 mt-3 outline-none rounded-md"
         ></textarea>
       </div>
-      <div class="flex items-center justify-between">
+      <div class="flex justify-between gap-4">
         <div class="course_box flex flex-col gap-2 w-1/2">
-          <label for="course" class="text-xl text-white">Kurs</label>
+          <label for="course" class="text-xl text-white mb-2">Kurs</label>
           <select
             id="course"
-            class="px-2 py-1 rounded-md outline-none cursor-pointer"
+            class="px-4 py-1 rounded-md outline-none cursor-pointer"
             v-model="courseSelect"
           >
             <option v-for="item in courses" :value="item">
               {{ item.title }}
             </option>
           </select>
+        </div>
+        <div class="comment_box flex flex-col w-1/2">
+          <label for="comment" class="text-xl text-white"
+            >Qoshimcha ma'lumot</label
+          >
+          <input
+            type="text"
+            class="p-2 px-5 rounded-md outline-none w-full mt-3"
+            v-model="comment_input"
+          />
         </div>
       </div>
       <div class="text-end mt-4">
@@ -84,6 +94,7 @@ export default {
       fullname: "",
       parents: "",
       phone_number: "",
+      comment_input: "",
     };
   },
   methods: {
@@ -100,13 +111,15 @@ export default {
         phone_number: this.phone_number,
         course: this.courseSelect.id,
         group: this.groupSelect.id,
+        comment: this.comment_input,
       };
 
       if (
         this.fullname !== "" &&
         this.parents !== "" &&
         this.phone_number !== "" &&
-        this.courseSelect !== ""
+        this.courseSelect !== "" &&
+        this.comment_input !== ""
       ) {
         try {
           const response = await fetch(
@@ -125,6 +138,7 @@ export default {
             this.phone_number = "";
             this.parents = "";
             this.courseSelect = "";
+            this.comment_input = "";
           });
         } catch (error) {
           console.error("Error:", error);
@@ -172,13 +186,13 @@ export default {
         this.parents = storedEditObj.parents;
         this.groupSelect = storedEditObj.group_info.title;
         this.courseSelect = storedEditObj.course_info.val;
+        this.comment_input = storedEditObj.comment;
       }
     },
     getModalChanges() {
       const storedModal = JSON.parse(localStorage.getItem("modal-edit"));
       if (storedModal !== null) {
         this.toggleEditLead = storedModal;
-        // window.location.reload();
         localStorage.setItem("modal-edit", JSON.stringify(this.toggleEditLead));
       } else {
         this.toggleEditLead = false;

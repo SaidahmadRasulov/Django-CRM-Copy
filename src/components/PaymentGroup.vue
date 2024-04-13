@@ -8,7 +8,7 @@
     </h1>
     <h1>Qaysi oyga tolov: {{ currentMonth }}</h1>
     <table
-      class="w-2/3 table-fixed mx-auto text-center border border-blue mt-10"
+      class="w-5/6 table-fixed mx-auto text-center border border-blue mt-10"
     >
       <thead>
         <tr class="border bg-blue border-blue text-white">
@@ -24,7 +24,7 @@
             </select>
           </th>
           <th class="px-4 py-2">Amal</th>
-          <th class="px-4 py-2">Summa</th>
+          <th class="px-4 py-2">Balans</th>
         </tr>
       </thead>
       <tbody>
@@ -35,30 +35,33 @@
         >
           <td class="border px-2 py-2">{{ index + 1 }}</td>
           <td class="border px-4 py-2">{{ student.fullname }}</td>
-          <td class="border">
+          <td class="border" v-if="!student.grant">
             <input
               type="text"
-              v-model="payment"
+              v-model="student.amount"
               class="w-full p-2 outline-none bg-transparent"
             />
           </td>
+          <td class="border" v-else>-</td>
           <td class="border">
             <button
-              class="px-4 py-2 bg-green-700 text-white rounded-md"
+              class="px-4 py-2 bg-green-700 text-white rounded-md mr-4"
               @click="handlePayment(student)"
             >
               To'lash
             </button>
+            <button
+              class="px-4 py-2 bg-green-700 text-white rounded-md"
+              @click="handlePostGrant(student)"
+            >
+              Grant
+            </button>
           </td>
-          <td class="border">
+          <td class="border" v-if="!student.grant">
             {{ student.balance }}
           </td>
+          <td class="border" v-else>Grant</td>
         </tr>
-        <!-- <tr v-else>
-          <td colspan="7" class="border px-4 py-2 text-center">
-            Ma'lumot yo'q
-          </td>
-        </tr> -->
       </tbody>
     </table>
   </div>
@@ -117,21 +120,63 @@ export default {
         });
     },
     async handlePayment(student) {
-      let new_payment = {
+      if (!student.amount || isNaN(parseFloat(student.amount))) {
+        alert("Iltimos to'gri ma'lumot kiriting");
+        return;
+      }
+      const paymentData = {
         student: student.id,
-        amount: this.payment,
+        amount: parseFloat(student.amount),
       };
-      const response = await fetch(
-        `http://django-admin.uz/api/payments/create/`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${this.token}`,
-            "Content-type": "application/json",
-          },
-          body: JSON.stringify(new_payment),
+
+      try {
+        const response = await fetch(
+          `http://django-admin.uz/api/payments/create/`,
+          {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${this.token}`,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(paymentData),
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Tolov yuborishda xatolik yuz berdi!");
         }
-      ).then((response) => console.log(response.json()));
+
+        alert("Tolov muvaffaqiyatli amalga o'shirildi!");
+        window.location.reload();
+      } catch (error) {
+        console.error("Ошибка:", error);
+        alert("Произошла ошибка при отправке данных на сервер.");
+      }
+    },
+    async handlePostGrant(student) {
+      const postData = {
+        student: student.id,
+        grant: true,
+      };
+      try {
+        const response = await fetch(
+          `http://django-admin.uz/api/customer/students/${student.id}/update/`,
+          {
+            method: "PATCH",
+            headers: {
+              Authorization: `Bearer ${this.token}`,
+              "Content-type": "application/json",
+            },
+            body: JSON.stringify(postData),
+          }
+        )
+          .then((response) => response.json())
+          .then(() => {
+            alert("O'quvchining statusi o'zgarildi")
+          });
+      } catch (error) {
+        alert(error);
+      }
     },
   },
   mounted() {

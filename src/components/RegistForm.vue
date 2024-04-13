@@ -22,16 +22,29 @@
         autocomplete="false"
       />
     </div>
-    <div class="mb-6">
-      <label for="phone" class="text-xl text-white">Qayerdan Kelgan</label>
-      <input
-        type="text"
-        name="phone"
-        id="phone"
-        class="p-2 px-5 rounded-md outline-none w-full mt-3"
-        v-model="coming"
-        autocomplete="false"
-      />
+    <div class="flex gap-4">
+      <div class="mb-6">
+        <label for="phone" class="text-xl text-white">Qayerdan Kelgan</label>
+        <input
+          type="text"
+          name="phone"
+          id="phone"
+          class="p-2 px-5 rounded-md outline-none w-full mt-3"
+          v-model="coming"
+          autocomplete="false"
+        />
+      </div>
+      <div class="mb-6">
+        <label for="phone" class="text-xl text-white">Qachon Kelgan</label>
+        <input
+          type="date"
+          name="date_coming"
+          id="date_coming"
+          class="p-2 px-5 rounded-md outline-none w-full mt-3"
+          v-model="date_coming"
+          autocomplete="false"
+        />
+      </div>
     </div>
     <div class="mb-6 flex flex-col">
       <label for="parent" class="text-xl text-white"
@@ -63,7 +76,7 @@
           class="px-2 py-1 rounded-md outline-none cursor-pointer"
           v-model="courseSelect"
         >
-          <option v-for="item in courses" :value="item">
+          <option v-for="item in this.courses" :value="item">
             {{ item.title }}
           </option>
         </select>
@@ -107,24 +120,9 @@ export default {
       requestSent: false,
       teacherSelect: "",
       parent: "",
-      courses: [
-        {
-          id: 1,
-          title: "Dasturlash",
-          val: "dev",
-        },
-        {
-          id: 2,
-          title: "Grafik Dizayn",
-          val: "des",
-        },
-        {
-          id: 3,
-          title: "Python",
-          val: "py",
-        },
-      ],
       groups: [],
+      courses: [],
+      date_coming: "",
     };
   },
   methods: {
@@ -139,6 +137,7 @@ export default {
         mentor: this.teacherSelect,
         deleted: false,
         coming: this.coming,
+        added_date: this.date_coming,
       };
       const response = await fetch(
         "http://django-admin.uz/api/customer/students/create/",
@@ -158,7 +157,8 @@ export default {
         this.groupSelect !== "" &&
         this.courseSelect !== "" &&
         this.teacherSelect !== "" &&
-        this.coming !== ""
+        this.coming !== "" &&
+        this.date_coming !== ""
       ) {
         this.groups.forEach((item) => {
           if (item.title == this.groupSelect) {
@@ -178,36 +178,11 @@ export default {
         this.courseSelect = "";
         this.teacherSelect = "";
         this.coming = "";
-        alert("O'quvchi muvofaqqiyatli qoshildi!");
+        alert("O'quvchi muvaffaqiyatli qo'shildi!");
       } else {
-        alert("Iltimos, hammasini toldiring!");
+        alert("Iltimos, hammasini to'ldiring!");
       }
     },
-    postCourse() {
-      if (!this.storedRequest) {
-        this.courses.forEach((course) => {
-          fetch("http://django-admin.uz/api/courses/create/", {
-            method: "POST",
-            headers: {
-              Authorization: `Bearer ${this.token}`,
-              "Content-type": "application/json",
-            },
-            credentials: "include",
-            body: JSON.stringify(course),
-          })
-            .then((response) => response.json())
-            .then((data) => {
-              console.log("Course: ", data);
-            })
-            .catch((error) => {
-              console.error(error);
-            });
-        });
-        this.storedRequest = true;
-        localStorage.setItem("request", JSON.stringify(this.storedRequest));
-      }
-    },
-
     getCourse() {
       fetch("http://django-admin.uz/api/courses/all/", {
         headers: {
@@ -258,11 +233,6 @@ export default {
     this.getCourse();
     this.getGroups();
     this.getMentors();
-    const gettedRequest = JSON.parse(localStorage.getItem("request"));
-    this.storedRequest = gettedRequest;
-    if (!this.storedRequest) {
-      this.postCourse();
-    }
   },
 };
 </script>

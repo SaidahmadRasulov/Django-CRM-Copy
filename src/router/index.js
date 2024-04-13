@@ -10,6 +10,7 @@ import Mentors from "../view/Mentors.vue";
 import MentorAbout from "../view/MentorAbout.vue";
 import Leads from "../view/Leads.vue";
 import SignIn from "../view/SignIn.vue";
+import Trash from "../view/Trash.vue";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -68,6 +69,11 @@ const router = createRouter({
       name: "SignIn",
       path: "/signin",
       component: SignIn,
+    },
+    {
+      name: "Trash",
+      path: "/trash",
+      component: Trash,
     },
   ],
 });

@@ -1,5 +1,5 @@
 <template>
-  <section class="w-full" v-if="group.status !== 'completed'">
+  <section class="w-full " v-if="group.status !== 'completed'">
     <div class="group_title">
       <h1 class="text-2xl">Guruh: {{ title }}</h1>
       <h1 class="text-xl">Guruhning statusi: {{ group.status }}</h1>
@@ -18,11 +18,11 @@
         </button>
       </div>
     </div>
-    <div class="group_info mt-5">
+    <div class="group_info mt-5 h-[550px] overflow-y-scroll">
       <table
-        class="w-full table-fixed text-center mx-auto border border-blue mt-10"
+        class="w-full table-auto text-center mx-auto border border-blue mt-10"
       >
-        <thead>
+        <thead class="">
           <tr class="border bg-blue text-white border-blue">
             <th class="">#</th>
             <th class="">Ism-sharifi</th>
@@ -31,7 +31,7 @@
             </th>
           </tr>
         </thead>
-        <tbody>
+        <tbody class="mt-4">
           <tr v-for="(student, index) in group.students" :key="student.id">
             <td>{{ index + 1 }}</td>
             <td class="py-4">{{ student.fullname }}</td>
@@ -41,29 +41,33 @@
               >
                 <button
                   class="bg-green-500 text-xl py-2 px-4 rounded-md"
-                  @click="handlePostTrue(student.id, true)"
+                  @click="handlePostTrue(student.id, true, day)"
                 >
                   <i class="bx bxs-check-circle"></i>
                 </button>
                 <button
                   class="bg-red-500 text-xl py-2 px-4 rounded-md"
-                  @click="handlePostTrue(student.id, false)"
+                  @click="handlePostTrue(student.id, false, day)"
                 >
                   <i class="bx bxs-x-circle"></i>
                 </button>
               </div>
               <button
                 class="shadow-lg p-2 px-4 rounded-md border-2 border-white"
-                v-if="student.attendances.attendated != null"
+                v-if="student.attendances.attendated !== null"
+                :class="{
+                  'text-green-500': isAttended(student.id, day),
+                  'text-red-500': isAbsent(student.id, day),
+                }"
               >
                 <i
-                  class="bx bxs-check-circle text-green-500"
-                  v-if="student.attendances.attendated"
+                  v-if="isAttended(student.id, day)"
+                  class="bx bxs-check-circle text-xl"
                 ></i>
-                <i class="bx bxs-x-circle text-red-500 text-xl" v-else></i>
+                <i v-else class="bx bxs-x-circle text-xl"></i>
               </button>
               <button
-                class="shadow-lg p-4 rounded-md border-2 border-white"
+                class="shadow-lg p-2 px-4 rounded-md border-2 border-white"
                 v-else
               ></button>
             </td>
@@ -77,7 +81,6 @@
   </section>
 </template>
 
-
 <script>
 export default {
   data() {
@@ -88,7 +91,26 @@ export default {
       groupRender: [],
       token: localStorage.getItem("token"),
       daysInMonth: [],
+      attendanceDate: [],
+      datesMonth: [
+        {
+          id: 1,
+          title: "Hozirgi Oy",
+          value: new Date().getMonth() + 1,
+        },
+        {
+          id: 2,
+          title: "O'ldingi Oy",
+          value: new Date().getMonth(),
+        },
+        {
+          id: 3,
+          title: "2 Oy o'ldin",
+          value: new Date().getMonth() - 1,
+        },
+      ],
       gettedMonth: "",
+      selectedDates: "",
     };
   },
   methods: {
@@ -110,7 +132,6 @@ export default {
         .then((response) => response.json())
         .then((data) => {
           this.group = data;
-          console.log(this.group);
         });
     },
     getGroups() {
@@ -128,18 +149,32 @@ export default {
           this.getGroup();
         });
     },
+    getAttendaces() {
+      fetch("http://django-admin.uz/api/attendances/all/", {
+        headers: {
+          Authorization: `Bearer ${this.token}`,
+          "Content-type": "application/json",
+        },
+        credentials: "include",
+      })
+        .then((response) => response.json())
+        .then((response) => {
+          this.attendanceDate = response.data;
+        });
+    },
     getDaysInMonthArray() {
       const currentDate = new Date();
       const currentMonth = currentDate.getMonth();
-      this.gettedMonth = currentMonth;
       const nextMonth = new Date(
         currentDate.getFullYear(),
         currentMonth + 1,
         0
       );
       const daysInMonth = nextMonth.getDate();
-
-      this.daysInMonth = Array.from({ length: daysInMonth }, (_, i) => i + 1);
+      this.daysInMonth = [];
+      for (let i = 1; i <= daysInMonth; i++) {
+        this.daysInMonth.push(i);
+      }
     },
     async postStartStatus() {
       try {
@@ -153,34 +188,54 @@ export default {
             },
             body: JSON.stringify({ group_id: this.group.id }),
           }
-        ).then((response) => console.log(response));
-        alert("Guruhning statusi muvofaqiyatli o'zgarildi!");
-        window.location.reload();
+        );
+        if (response.ok) {
+          alert("Guruhning statusi muvaffaqiyatli o'zgarildi!");
+          window.location.reload();
+        } else {
+          console.error("Failed to update group status");
+        }
       } catch (error) {
-        console.log(error);
+        console.error("Error updating group status:", error);
       }
     },
     async postCompleteStatus() {
       try {
-        const response = await fetch(
-          "http://django-admin.uz/api/groups/complete/",
-          {
-            method: "POST",
-            headers: {
-              Authorization: `Bearer ${this.token}`,
-              "Content-type": "application/json",
-            },
-            body: JSON.stringify({ group_id: this.group.id }),
+        let confirm = window.confirm("Anniq tugadimi?");
+        if (confirm) {
+          const response = await fetch(
+            "http://django-admin.uz/api/groups/complete/",
+            {
+              method: "POST",
+              headers: {
+                Authorization: `Bearer ${this.token}`,
+                "Content-type": "application/json",
+              },
+              body: JSON.stringify({ group_id: this.group.id }),
+            }
+          );
+          if (response.ok) {
+            alert("Guruhning statusi muvaffaqiyatli o'zgardi!");
+            window.location.reload();
+          } else {
+            console.error("Failed to update group status");
           }
-        ).then((response) => console.log(response));
-        alert("Guruhning statusi muvofaqiyatli o'zgarildi!");
-        window.location.reload();
+        } else {
+          alert("Tugamadi.");
+        }
       } catch (error) {
-        console.log(error);
+        console.error("Error updating group status:", error);
       }
     },
-    async handlePostTrue(id) {
+    async handlePostTrue(id, attended, day) {
       try {
+        const currentDate = new Date();
+        const currentMonth = currentDate.getMonth();
+        const date = new Date(currentDate.getFullYear(), currentMonth, day);
+        const formattedDate = `${date.getFullYear()}-${(date.getMonth() + 1)
+          .toString()
+          .padStart(2, "0")}-${date.getDate().toString().padStart(2, "0")}`;
+
         const response = await fetch(
           `http://django-admin.uz/api/attendances/create/`,
           {
@@ -189,33 +244,100 @@ export default {
               Authorization: `Bearer ${this.token}`,
               "Content-type": "application/json",
             },
-            body: JSON.stringify({ student: id, attended: true }),
+            body: JSON.stringify({
+              student: id,
+              attended: attended,
+              date: formattedDate,
+            }),
           }
-        ).then((response) => console.log(response.json()));
+        );
+        if (response.ok) {
+          alert("Yoqlanma qilindi!");
+          window.location.reload();
+        } else {
+          console.error("Failed to post attendance");
+        }
       } catch (error) {
-        console.log(error);
+        console.error("Error posting attendance:", error);
       }
     },
-    async handlePostfalse(id) {
-      console.log(id);
+    async handlePostfalse(id, attended, day) {
+      try {
+        const currentDate = new Date();
+        const currentMonth = currentDate.getMonth();
+        const date = new Date(currentDate.getFullYear(), currentMonth, day);
+        const formattedDate = `${date.getFullYear()}-${(date.getMonth() + 1)
+          .toString()
+          .padStart(2, "0")}-${date.getDate().toString().padStart(2, "0")}`;
+        const response = await fetch(
+          `http://django-admin.uz/api/attendances/create/`,
+          {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${this.token}`,
+              "Content-type": "application/json",
+            },
+            body: JSON.stringify({
+              student: id,
+              attended: attended,
+              date: formattedDate,
+            }),
+          }
+        );
+
+        if (response.ok) {
+          alert("Yoqlanma qilindi!");
+          window.location.reload();
+        } else {
+          console.error("Failed to post attendance");
+        }
+      } catch (error) {
+        console.error("Error posting attendance:", error);
+      }
+    },
+    isAttended(studentId, day) {
+      if (this.attendanceDate) {
+        const currentDate = new Date();
+        const currentMonth = currentDate.getMonth();
+        const formattedDate = `${currentDate.getFullYear()}-${(currentMonth + 1)
+          .toString()
+          .padStart(2, "0")}-${day.toString().padStart(2, "0")}`;
+        const attendance = this.attendanceDate.find(
+          (entry) => entry.student === studentId && entry.date === formattedDate
+        );
+        return attendance ? attendance.attended : false;
+      } else {
+        return false;
+      }
+    },
+
+    isAbsent(studentId, day) {
+      return !this.isAttended(studentId, day);
     },
   },
   computed: {
     studiedDays() {
       const currentDate = new Date();
       const currentMonth = currentDate.getMonth();
-      const workingDays = [];
-      const firstWorkingDay = new Date(
+      const daysInMonth = new Date(
         currentDate.getFullYear(),
-        currentMonth,
-        1
-      );
-      while (workingDays.length < 12) {
-        if (firstWorkingDay.getDay() % 2 !== 0) {
-          workingDays.push(firstWorkingDay.getDate());
+        currentMonth + 1,
+        0
+      ).getDate();
+
+      const workingDays = [];
+
+      for (let i = 1; i <= daysInMonth; i++) {
+        const date = new Date(currentDate.getFullYear(), currentMonth, i);
+        const dayOfWeek = date.getDay();
+        if (
+          (this.group.study_day == "toq" && dayOfWeek % 2 != 0) ||
+          (this.group.study_day == "juft" && dayOfWeek % 2 == 0)
+        ) {
+          workingDays.push(i);
         }
-        firstWorkingDay.setDate(firstWorkingDay.getDate() + 1);
       }
+
       return workingDays;
     },
   },
@@ -225,9 +347,11 @@ export default {
       this.getGroups();
       this.getDaysInMonthArray();
     }
-    // this.getAttendance()
+    this.getAttendaces();
   },
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+/* Здесь ваш существующий CSS */
+</style>

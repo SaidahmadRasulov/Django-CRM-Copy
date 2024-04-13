@@ -4,7 +4,7 @@
       <h2 class="text-xl text-white mb-3">Guruh qo'shish</h2>
       <div class="mb-2">
         <input
-        placeholder="Guruh nomini kiriting"
+          placeholder="Guruh nomini kiriting"
           type="text"
           id="group_title"
           v-model="group_add"
@@ -38,22 +38,43 @@
       <div class="mb-4">
         <input
           type="number"
-          placeholder="O'qishning Davomligi"
+          placeholder="O'qishning Davomiyligi"
           v-model="group_continue"
           class="w-full py-2 px-4 outline-none mt-4 rounded-md placeholder:text-lg"
         />
       </div>
-      <div class="mb-6">
-        <label for="select" class="text-xl text-white">Mentor</label>
-        <select
-          id="select"
-          class="w-full my-2 p-2 outline-none rounded-md"
-          v-model="mentor_select"
-        >
-          <option :value="mentor" v-for="mentor in this.mentors">
-            {{ mentor.fullname }}
-          </option>
-        </select>
+      <div class="flex justify-between gap-4">
+        <div class="mb-4">
+          <h1 class="text-xl text-white">O'qish vaqti</h1>
+          <div class="flex flex-col">
+            <div class="flex mt-2 w-full">
+              <label for="start" class="text-lg mr-2 text-white"
+                >Boshlanish</label
+              >
+              <input type="time" id="start" v-model="start_time" />
+            </div>
+            <div class="flex mt-2 w-full justify-between">
+              <label for="start" class="text-lg mr-2 text-white">Tugashi</label>
+              <input type="time" id="start" v-model="end_time" />
+            </div>
+          </div>
+        </div>
+        <div class="mb-4">
+          <h1 class="mb-2 text-white text-xl">Qachon o'chilgan</h1>
+          <input type="date" v-model="date_add" />
+        </div>
+        <div class="mb-4">
+          <label for="select" class="text-xl text-white">Mentor</label>
+          <select
+            id="select"
+            class="w-full my-2 p-2 outline-none rounded-md"
+            v-model="mentor_select"
+          >
+            <option :value="mentor" v-for="mentor in this.mentors">
+              {{ mentor.fullname }}
+            </option>
+          </select>
+        </div>
       </div>
       <div class="mt-4 text-end">
         <button
@@ -78,18 +99,21 @@ export default {
       mentors: [],
       mentor_select: "",
       study_select: "",
+      start_time: "",
+      end_time: "",
       study_days: [
         {
           id: 1,
           title: "Dushanba, Chorshanba, Juma",
-          val: "juft",
+          val: "toq",
         },
         {
           id: 2,
           title: "Seyshanba, Payshanba, Shanba",
-          val: "toq",
+          val: "juft",
         },
       ],
+      date_add: "",
     };
   },
   methods: {
@@ -100,17 +124,23 @@ export default {
         title: this.group_add,
         course: this.course_select.id,
         students: [],
-        studyDay: this.study_select,
+        study_day: this.study_select,
         val: this.course_select.val,
         mentor: this.mentor_select.id,
         mentor_info: this.mentor_select,
         continuity: this.group_continue,
+        lesson_start_time: this.start_time,
+        lesson_end_time: this.end_time,
+        added_date: this.date_add,
       };
       if (
         new_group.title !== "" &&
         new_group.course !== "" &&
-        new_group.studyDay !== "" &&
-        new_group.continuity !== ""
+        new_group.study_day !== "" &&
+        new_group.continuity !== "" &&
+        new_group.lesson_start_time !== "" &&
+        new_group.lesson_end_time !== "" &&
+        new_group.added_date !== ""
       ) {
         try {
           const response = await fetch(
@@ -124,12 +154,15 @@ export default {
               body: JSON.stringify(new_group),
             }
           );
-          alert("Guruh muvafaqiyatli koshildi");
+          alert("Guruh muvaffaqiyatli qo'shildi");
           window.location.reload();
           this.course_select = "";
           this.group_add = "";
           this.study_days = "";
           this.mentor_select = "";
+          this.start_time = "";
+          this.end_time = "";
+          this.added_date = "";
           console.log("Response !!", response.json());
         } catch (error) {
           console.error("Network error:", error);

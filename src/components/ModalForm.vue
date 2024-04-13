@@ -43,7 +43,7 @@
           class="resize-none h-20 p-2 mt-3 outline-none rounded-md"
         ></textarea>
       </div>
-      <div class="flex items-center justify-between">
+      <div class="flex gap-4 items-center justify-between">
         <div class="group_box flex flex-col gap-2 w-1/3">
           <label for="group" class="text-xl text-white">Guruhlar</label>
           <select
@@ -55,6 +55,17 @@
               {{ item.title }}
             </option>
           </select>
+        </div>
+        <div class="course_box flex flex-col gap-2 w-1/2">
+          <label for="coming_date" class="text-xl text-white"
+            >Qachon Kelgan</label
+          >
+          <input
+            id="coming_date"
+            type="date"
+            class="px-2 py-1 rounded-md outline-none cursor-pointer"
+            v-model="coming_date"
+          />
         </div>
         <div class="course_box flex flex-col gap-2 w-1/2">
           <label for="course" class="text-xl text-white">Kurs</label>
@@ -96,6 +107,7 @@ export default {
       fullname: "",
       parents: "",
       phone_number: "",
+      coming_date: "",
     };
   },
   methods: {
@@ -103,7 +115,7 @@ export default {
       this.toggleEdit = !this.toggleEdit;
       console.log(this.toggleEdit);
       localStorage.setItem("modal", JSON.stringify(this.toggleEdit));
-      window.location.reload()
+      window.location.reload();
     },
     async handleEdit() {
       const editedData = {
@@ -112,6 +124,7 @@ export default {
         phone_number: this.phone_number,
         course: this.courseSelect.id,
         group: this.groupSelect.id,
+        added_date: this.coming_date,
       };
 
       if (
@@ -185,6 +198,7 @@ export default {
         this.parents = storedEditObj.parents;
         this.groupSelect = storedEditObj.group_info.title;
         this.courseSelect = storedEditObj.course_info.val;
+        this.coming_date = storedEditObj.added_date
       }
     },
     getModalChanges() {
@@ -193,7 +207,6 @@ export default {
         this.toggleEdit = storedModal;
         // window.location.reload();
         localStorage.setItem("modal", JSON.stringify(this.toggleEdit));
-
       } else {
         this.toggleEdit = false;
         localStorage.setItem("modal", JSON.stringify(this.toggleEdit));

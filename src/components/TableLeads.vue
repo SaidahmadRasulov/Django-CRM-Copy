@@ -26,6 +26,7 @@
           <th class="px-4 py-2">Tel raqam</th>
           <th class="px-4 py-2">Ota-ona</th>
           <th class="px-4 py-2">Kurs</th>
+          <th class="px-4 py-2">Qoshimcha ma'lumot</th>
           <th class="px-4 py-2">Action</th>
         </tr>
       </thead>
@@ -41,6 +42,7 @@
           <td class="border px-4 py-2">{{ student.phone_number }}</td>
           <td class="border px-4 py-2">{{ student.parents }}</td>
           <td class="border px-4 py-2">{{ student.course_info.title }}</td>
+          <td class="border px-4 py-2">{{ student.comment }}</td>
           <td class="border px-4 py-2">
             <div class="flex items-center justify-center gap-1">
               <button
@@ -65,7 +67,7 @@
           </td>
         </tr>
         <tr v-else>
-          <td colspan="6" class="border px-4 py-2 text-center">
+          <td colspan="7" class="border px-4 py-2 text-center">
             Ma'lumot yo'q
           </td>
         </tr>
@@ -149,9 +151,6 @@ export default {
         .then((response) => {
           this.leads = response.data;
           console.log("Leads: ", this.leads);
-          if (this.leads.length === 0) {
-            this.$router.push("/lead-add");
-          }
         });
     },
   },
