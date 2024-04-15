@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1 class="text-2xl">To'lov Bo'limi</h1>
+    <h1 class="text-xl">To'lov Bo'limi</h1>
     <TableTrash />
   </div>
 </template>

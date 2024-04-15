@@ -12,9 +12,12 @@
         <option value="py">Python</option>
       </select>
     </div>
-    <table class="w-full table-fixed text-center mx-auto border border-blue">
+    <table
+      class="w-full table-fixed text-center mx-auto border border-[#33333390]"
+      v-if="filteredStudents.length > 0"
+    >
       <thead>
-        <tr class="border bg-blue text-white border-blue">
+        <tr class="text-[12px] bg-[#333] text-white border border-[#33333390]">
           <th class="px-4 py-2">#</th>
           <th class="px-4 py-2">Ism-sharifi</th>
           <th class="px-4 py-2">Tel raqam</th>
@@ -24,12 +27,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr
-          v-if="filteredStudents.length > 0"
-          v-for="(student, index) in filteredStudents"
-          :key="student.id"
-          :class="{ 'text-stone-500': student.deleted === true }"
-        >
+        <tr v-for="(student, index) in filteredStudents" :key="student.id">
           <td class="border px-4 py-2">{{ index + 1 }}</td>
           <td class="border px-4 py-2">{{ student.fullname }}</td>
           <td class="border px-4 py-2">{{ student.phone_number }}</td>
@@ -37,11 +35,18 @@
           <td class="border px-4 py-2">{{ student.course_info.title }}</td>
           <td class="border px-4 py-2">{{ student.group_info.title }}</td>
         </tr>
-        <tr v-else>
-          <td colspan="6" class="border px-4 py-2 text-center">
-            Ma'lumot yo'q
-          </td>
-        </tr>
+      </tbody>
+    </table>
+    <table
+      class="w-full table-fixed text-center mx-auto border-[#33333390]"
+      v-else
+    >
+      <tbody>
+        <img
+          class="h-[70vh] mx-auto object-center object-cover"
+          src="../assets/no-data.png"
+          alt=""
+        />
       </tbody>
     </table>
   </section>
@@ -68,7 +73,7 @@ export default {
         .then((response) => response.json())
         .then((response) => {
           this.students = response.data;
-          console.log(this.students)
+          console.log(this.students);
         })
         .catch((error) => {
           console.error("Error fetching deleted students:", error);

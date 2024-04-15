@@ -3,7 +3,7 @@
     <div class="select_box text-end">
       <select
         id="select"
-        class="mb-4 p-2 outline-none rounded-md"
+        class="mb-4 p-2 outline-none rounded-md mr-2 border border-[#33333390]"
         v-model="tableSelect"
       >
         <option value="all">Hammasi</option>
@@ -12,10 +12,13 @@
         <option value="py">Python</option>
       </select>
     </div>
-    <table class="w-full table-fixed text-center mx-auto border border-blue">
+    <table
+      v-if="filteredStudents.length > 0"
+      class="w-full table-fixed text-center mx-auto border border-[#33333390]"
+    >
       <thead>
-        <tr class="border bg-blue text-white border-blue">
-          <th class="px-4 py-2">#</th>
+        <tr class="border bg-[#333] text-[14px] text-white border-[#33333390]">
+          <th class="px-4 py-2">№</th>
           <th class="px-4 py-2">Ism-sharifi</th>
           <th class="px-4 py-2">Tel raqam</th>
           <th class="px-4 py-2">Ota-ona</th>
@@ -29,29 +32,43 @@
       <tbody>
         <tr
           ref="trRef"
-          v-if="filteredStudents.length > 0"
           v-for="(student, index) in filteredStudents"
           :key="student.id"
           :class="{ 'text-stone-500': student.deleted === true }"
+          class="hover:bg-[#f4dfd17c]"
         >
-          <td class="border px-4 py-2">{{ index + 1 }}</td>
-          <td class="border px-4 py-2">{{ student.fullname }}</td>
-          <td class="border px-4 py-2">{{ student.phone_number }}</td>
-          <td class="border px-4 py-2">{{ student.parents }}</td>
-          <td class="border px-4 py-2">{{ student.course_info.title }}</td>
-          <td class="border px-4 py-2">{{ student.group_info.title }}</td>
-          <td class="border px-4 py-2">{{ student.added_date }}</td>
-          <td class="border px-4 py-2">{{ student.coming }}</td>
-          <td class="border px-4 py-2">
+          <td class="border border-[#33333363] px-2 py-1">{{ index + 1 }}</td>
+          <td class="border border-[#33333363] px-2 py-1">
+            {{ student.fullname }}
+          </td>
+          <td class="border border-[#33333363] px-2 py-1">
+            {{ student.phone_number }}
+          </td>
+          <td class="border border-[#33333363] px-2 py-1">
+            {{ student.parents }}
+          </td>
+          <td class="border border-[#33333363] px-2 py-1">
+            {{ student.course_info.title }}
+          </td>
+          <td class="border border-[#33333363] px-2 py-1">
+            {{ student.group_info.title }}
+          </td>
+          <td class="border border-[#33333363] px-2 py-1">
+            {{ student.added_date }}
+          </td>
+          <td class="border border-[#33333363] px-2 py-1">
+            {{ student.coming }}
+          </td>
+          <td class="border border-[#33333363] px-2 py-1">
             <div class="flex items-center justify-center gap-1">
               <button
-                class="py-1 px-2 bg-blue text-lg rounded-lg hover:bg-transparent border border-blue hover:text-blue text-white"
+                class="py-1 px-2 text-lg rounded-lg hover:bg-transparent hover:text-blue text-white"
                 @click="handleEdit(student)"
               >
-                <i class="bx bx-pencil"></i>
+                <i class="bx bx-pencil text-blue"></i>
               </button>
               <button
-                class="py-1 px-2 bg-red-600 text-lg rounded-lg hover:bg-transparent border hover:text-red-600 border-red-600 text-white"
+                class="py-1 px-2 text-lg rounded-lg hover:bg-transparent text-red-600"
                 @click="handleDelete(student.id)"
               >
                 <i class="bx bx-trash"></i>
@@ -59,9 +76,17 @@
             </div>
           </td>
         </tr>
-        <tr v-else>
-          <td colspan="9" class="border px-4 py-2 text-center">
-            Ma'lumot yo'q
+      </tbody>
+    </table>
+    <table v-else class="w-full table-fixed text-center mx-auto">
+      <tbody>
+        <tr>
+          <td colspan="9">
+            <img
+              class="h-[70vh] mx-auto object-center object-cover"
+              src="../assets/no-data.png"
+              alt=""
+            />
           </td>
         </tr>
       </tbody>
@@ -100,7 +125,6 @@ export default {
         .then((response) => response.json())
         .then((response) => {
           this.students = response.data;
-          console.log("Students: ", this.students);
         });
     },
     handleEdit(obj) {
@@ -124,19 +148,16 @@ export default {
           }
         );
         if (response.ok) {
-          alert("Muvafaqiyatli ochirildi");
           window.location.reload();
         }
-        console.log(response.json());
       } else {
-        alert("O'chirilish amalga oshirilmadi.")
+        alert("O'chirilish amalga oshirilmadi.");
       }
     },
   },
   mounted() {
     this.getStudents();
     this.toggleShow = JSON.parse(localStorage.getItem("modal")) || false; // Set default value if no value found in localStorage
-    console.log(this.toggleShow);
   },
   watch: {
     toggleShow: function (newToggleShow) {
@@ -149,7 +170,7 @@ export default {
         return this.students;
       } else {
         return this.students.filter(
-          (student) => student.course === this.tableSelect
+          (student) => student.course_info.val === this.tableSelect
         );
       }
     },

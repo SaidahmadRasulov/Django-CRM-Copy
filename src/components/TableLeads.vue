@@ -18,9 +18,12 @@
         <option value="py">Python</option>
       </select>
     </div>
-    <table class="w-full table-fixed text-center mx-auto border border-blue">
+    <table
+      class="w-full table-fixed text-center mx-auto border border-[#33333390]"
+      v-if="leads.length > 0"
+    >
       <thead>
-        <tr class="border bg-blue text-white border-blue">
+        <tr class="border bg-[#333] text-[14px] text-white border-[#33333390]">
           <th class="px-4 py-2">#</th>
           <th class="px-4 py-2">Ism-sharifi</th>
           <th class="px-4 py-2">Tel raqam</th>
@@ -31,12 +34,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr
-          ref="trRef"
-          v-if="leads.length > 0"
-          v-for="(student, index) in leads"
-          :key="student.id"
-        >
+        <tr ref="trRef" v-for="(student, index) in leads" :key="student.id">
           <td class="border px-4 py-2">{{ index + 1 }}</td>
           <td class="border px-4 py-2">{{ student.fullname }}</td>
           <td class="border px-4 py-2">{{ student.phone_number }}</td>
@@ -46,29 +44,40 @@
           <td class="border px-4 py-2">
             <div class="flex items-center justify-center gap-1">
               <button
-                class="py-1 px-2 bg-blue text-lg rounded-lg hover:bg-transparent border border-blue hover:text-blue text-white"
+                class="py-1 px-2  text-lg rounded-lg hover:cursor-pointer"
                 @click="handleEdit(student)"
               >
-                <i class="bx bx-pencil"></i>
+                <i class="bx bx-pencil text-blue"></i>
               </button>
               <button
-                class="py-1 px-2 bg-red-600 text-lg rounded-lg hover:bg-transparent border hover:text-red-600 border-red-600 text-white"
+                class="py-1 px-2 text-lg rounded-lg hover:cursor-pointer"
                 @click="handleDelete(student.id)"
               >
-                <i class="bx bx-trash"></i>
+                <i class="bx bx-trash text-red-600"></i>
               </button>
               <button
-                class="py-1 px-2 bg-green-600 text-lg rounded-lg hover:bg-transparent border hover:text-green-600 border-green-600 text-white"
+                class="py-1 px-2  text-lg rounded-lg hover:cursor-pointer"
                 @click="handleAdd(student)"
               >
-                <i class="bx bx-check"></i>
+                <i class="bx bx-check text-green-600"></i>
               </button>
             </div>
           </td>
         </tr>
-        <tr v-else>
-          <td colspan="7" class="border px-4 py-2 text-center">
-            Ma'lumot yo'q
+      </tbody>
+    </table>
+    <table
+      class="w-full table-fixed text-center mx-auto"
+      v-else
+    >
+      <tbody>
+        <tr>
+          <td colspan="9">
+            <img
+              class="h-[70vh] mx-auto object-center object-cover"
+              src="../assets/no-data.png"
+              alt=""
+            />
           </td>
         </tr>
       </tbody>

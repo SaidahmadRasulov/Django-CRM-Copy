@@ -1,8 +1,8 @@
 <template>
-  <section class="w-full " v-if="group.status !== 'completed'">
+  <section class="w-full" v-if="this.group.status !== 'completed'">
     <div class="group_title">
       <h1 class="text-2xl">Guruh: {{ title }}</h1>
-      <h1 class="text-xl">Guruhning statusi: {{ group.status }}</h1>
+      <h1 class="text-xl">Guruhning statusi: {{ group.status == "continues" ? "Aktiv" : "Guruh aktiv emas" }}</h1>
       <div class="my-2 flex gap-4">
         <button
           @click="postStartStatus"
@@ -18,12 +18,12 @@
         </button>
       </div>
     </div>
-    <div class="group_info mt-5 h-[550px] overflow-y-scroll">
+    <div class="group_info mt-5 h-[550px] overflow-y-scroll overflow-x-hidden">
       <table
-        class="w-full table-auto text-center mx-auto border border-blue mt-10"
+        class="w-full table-auto text-center mx-auto border border-[#33333390] mt-10"
       >
         <thead class="">
-          <tr class="border bg-blue text-white border-blue">
+          <tr class="bg-[#333] text-white border border-[#33333390]">
             <th class="">#</th>
             <th class="">Ism-sharifi</th>
             <th v-for="day in studiedDays" :key="day">
@@ -32,12 +32,16 @@
           </tr>
         </thead>
         <tbody class="mt-4">
-          <tr v-for="(student, index) in group.students" :key="student.id">
+          <tr
+            v-for="(student, index) in group.students"
+            :key="student.id"
+            class="hover:bg-[#f4dfd17c]"
+          >
             <td>{{ index + 1 }}</td>
             <td class="py-4">{{ student.fullname }}</td>
             <td class="group relative" v-for="day in studiedDays">
               <div
-                class="group-hover:flex transition-all delay-100 group-hover:transition-all group-hover:delay-100 gap-2 absolute top-[-30px] z-10 bg-white left-[-10px] hidden text-white rounded-md"
+                class="group-hover:flex transition-all delay-100 group-hover:transition-all group-hover:delay-100 gap-2 absolute top-[-30px] z-10 bg-white left-[-20px] hidden text-white rounded-md"
               >
                 <button
                   class="bg-green-500 text-xl py-2 px-4 rounded-md"
@@ -92,23 +96,6 @@ export default {
       token: localStorage.getItem("token"),
       daysInMonth: [],
       attendanceDate: [],
-      datesMonth: [
-        {
-          id: 1,
-          title: "Hozirgi Oy",
-          value: new Date().getMonth() + 1,
-        },
-        {
-          id: 2,
-          title: "O'ldingi Oy",
-          value: new Date().getMonth(),
-        },
-        {
-          id: 3,
-          title: "2 Oy o'ldin",
-          value: new Date().getMonth() - 1,
-        },
-      ],
       gettedMonth: "",
       selectedDates: "",
     };
@@ -132,6 +119,7 @@ export default {
         .then((response) => response.json())
         .then((data) => {
           this.group = data;
+          console.log(this.group);
         });
     },
     getGroups() {
@@ -190,7 +178,7 @@ export default {
           }
         );
         if (response.ok) {
-          alert("Guruhning statusi muvaffaqiyatli o'zgarildi!");
+          alert("Guruhning statusi muvaffaqiyatli o'zgardi!");
           window.location.reload();
         } else {
           console.error("Failed to update group status");
@@ -252,7 +240,6 @@ export default {
           }
         );
         if (response.ok) {
-          alert("Yoqlanma qilindi!");
           window.location.reload();
         } else {
           console.error("Failed to post attendance");
@@ -286,7 +273,6 @@ export default {
         );
 
         if (response.ok) {
-          alert("Yoqlanma qilindi!");
           window.location.reload();
         } else {
           console.error("Failed to post attendance");
@@ -316,31 +302,35 @@ export default {
     },
   },
   computed: {
-    studiedDays() {
-      const currentDate = new Date();
-      const currentMonth = currentDate.getMonth();
-      const daysInMonth = new Date(
-        currentDate.getFullYear(),
-        currentMonth + 1,
-        0
-      ).getDate();
+  studiedDays() {
+    const currentDate = new Date();
+    const currentMonth = currentDate.getMonth();
+    const daysInMonth = new Date(
+      currentDate.getFullYear(),
+      currentMonth + 1,
+      0
+    ).getDate();
 
-      const workingDays = [];
+    const workingDays = [];
+    const studyDay = this.group.study_day;
 
-      for (let i = 1; i <= daysInMonth; i++) {
-        const date = new Date(currentDate.getFullYear(), currentMonth, i);
-        const dayOfWeek = date.getDay();
-        if (
-          (this.group.study_day == "toq" && dayOfWeek % 2 != 0) ||
-          (this.group.study_day == "juft" && dayOfWeek % 2 == 0)
-        ) {
-          workingDays.push(i);
-        }
+    for (let i = 1; i <= daysInMonth; i++) {
+      const date = new Date(currentDate.getFullYear(), currentMonth, i);
+      const dayOfWeek = date.getDay();
+
+      if (
+        dayOfWeek !== 0 && // Исключаем воскресенье
+        ((studyDay === "toq" && dayOfWeek % 2 !== 0) || // Нечетные числа для дней недели в "toq"
+        (studyDay === "juft" && dayOfWeek % 2 === 0)) // Четные числа для дней недели в "juft"
+      ) {
+        workingDays.push(i);
       }
+    }
 
-      return workingDays;
-    },
+    return workingDays;
   },
+},
+
 
   mounted() {
     if (this.group.status !== "completed") {

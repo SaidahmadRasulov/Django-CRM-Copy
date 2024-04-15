@@ -4,51 +4,51 @@
     v-if="toggleAdd"
   >
     <i
-      class="bx bx-x text-white text-[2.5rem] absolute right-[2%] top-2 cursor-pointer"
+      class="bx bx-x text-[2.5rem] absolute right-[2%] top-2 cursor-pointer text-white"
       @click="handleCancelAdd"
     ></i>
 
     <div
-      class="form_content w-1/2 mt-20 mx-auto bg-blue shadow-lg p-4 rounded-md"
+      class="form_content w-1/2 mt-20 mx-auto bg-white shadow-lg p-4 rounded-md"
     >
       <div class="mb-6 flex flex-col">
-        <label for="name" class="mb-3 text-xl text-white">Ism-sharifi</label>
+        <label for="name" class="mb-3 text-xl">Ism-sharifi</label>
         <input
           type="text"
           name="fullname"
           id="name"
-          class="p-2 px-5 rounded-md outline-none"
+          class="p-2 px-5 rounded-md outline-none border border-[#33333390]"
           v-model="fullname"
           autocomplete="false"
         />
       </div>
       <div class="mb-6">
-        <label for="phone" class="text-xl text-white">Telefon raqami</label>
+        <label for="phone" class="text-xl">Telefon raqami</label>
         <input
           type="number"
           name="phone"
           id="phone"
-          class="p-2 px-5 rounded-md outline-none w-full mt-3"
+          class="p-2 px-5 rounded-md outline-none w-full mt-3 border border-[#33333390]"
           v-model="phone_number"
           autocomplete="false"
         />
       </div>
       <div class="mb-6 flex flex-col">
-        <label for="parent" class="text-xl text-white"
+        <label for="parent" class="text-xl"
           >Ota-onasining ism-sharifi va tel raqami</label
         >
-        <textarea
+        <input
           id="parent"
           v-model="parents"
-          class="resize-none h-20 p-2 mt-3 outline-none rounded-md"
-        ></textarea>
+          class=" border border-[#3333339] h-20 p-2 mt-3 outline-none rounded-md"
+        ></input>
       </div>
       <div class="flex justify-between gap-4">
         <div class="course_box flex flex-col gap-2 w-1/2">
-          <label for="course" class="text-xl text-white mb-2">Kurs</label>
+          <label for="course" class="text-xl">Kurs</label>
           <select
             id="course"
-            class="px-4 py-1 rounded-md outline-none cursor-pointer"
+            class="p-2 px-5 rounded-md outline-none cursor-pointer border border-[#33333390]"
             v-model="courseSelect"
           >
             <option v-for="item in courses" :value="item">
@@ -57,12 +57,12 @@
           </select>
         </div>
         <div class="comment_box flex flex-col w-1/2">
-          <label for="comment" class="text-xl text-white"
+          <label for="comment" class="text-xl"
             >Qoshimcha ma'lumot</label
           >
           <input
             type="text"
-            class="p-2 px-5 rounded-md outline-none w-full mt-3"
+            class="p-2 px-5 rounded-md outline-none w-full mt-2 border border-[#33333390]"
             v-model="comment_input"
           />
         </div>

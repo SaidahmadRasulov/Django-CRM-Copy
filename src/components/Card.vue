@@ -1,10 +1,10 @@
 <template>
-  <div class="card w-full bg-white rounded-md">
-    <div class="card_header">
-      <img src="../assets/cartImage.jpg" class="rounded-t-md" />
+  <div class="card p-1 w-full h-[330px] shadow-md bg-white rounded-md">
+    <div class="card_header text-center">
+      <i class='bx bx-group text-[100px]'></i>
     </div>
     <div class="card_body p-4">
-      <h1 class="text-2xl">Guruh Raqami: {{ item.title }}</h1>
+      <h1 class="text-lg">Guruh Raqami: {{ item.title }}</h1>
       <h2>O'quvchilar Soni: {{ item.students_count }}</h2>
       <h2>O'qish kunlari: {{ item.study_day }}</h2>
       <h2>Qachon o'chilgan: {{ item.added_date }}</h2>
@@ -13,16 +13,16 @@
         {{ getFormattedTime(item.lesson_end_time) }}
       </h2>
     </div>
-    <div class="card_footer p-2 text-end flex items-center justify-between">
+    <div class="card_footer text-[12px] p-2 text-end flex items-center justify-between">
       <button
-        class="py-2 px-2 bg-red-700 rounded-md border border-red-700 hover:bg-transparent text-white hover:text-red-700 transition-all delay-75"
+        class="py-2 px-2 bg-red-700 rounded-md border border-red-700 hover:bg-transparent text-white  hover:text-red-700 transition-all delay-75"
         @click="handleDelete(item.id)"
       >
         Guruhni o'chirish
       </button>
       <RouterLink :to="`/${this.path}/${item.title}`">
         <button
-          class="py-2 px-2 bg-green-700 rounded-md border border-green-700 hover:bg-transparent text-white hover:text-green-700 transition-all delay-75"
+          class="py-2 px-2 bg-green-700 rounded-md border border-green-700 hover:bg-transparent  text-white hover:text-green-700 transition-all delay-75"
         >
           Guruhni ko'rish
         </button>

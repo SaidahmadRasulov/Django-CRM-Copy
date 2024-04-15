@@ -1,9 +1,11 @@
 <template>
-  <section>
-    <h1 class="text-2xl">O'quvchi qo'shish</h1>
-    <div class="container mt-[2rem] flex gap-4">
-      <RegistForm />
-      <div class="w-2/4">
+  <section class="">
+    <h1 class="text-2xl mb-4">O'quvchi qo'shish</h1>
+    <div class="flex flex-col lg:flex-row">
+      <div class="lg:w-full">
+        <RegistForm />
+      </div>
+      <div class="lg:w-full">
         <GroupAdd />
       </div>
     </div>

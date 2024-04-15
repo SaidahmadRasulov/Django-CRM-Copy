@@ -14,11 +14,15 @@
       </select>
     </div>
     <div
-      class="flex items-center gap-4 justify-around flex-wrap h-[600px] p-4 overflow-y-scroll"
+      class="flex gap-4 flex-wrap h-[600px] p-4 overflow-y-scroll"
+      v-if="this.groupsRender.length > 0"
     >
-      <div class="card_content flex w-1/4" v-for="item in filteredGroups">
+      <div class="card_content flex w-1/5" v-for="item in filteredGroups">
         <Card :item="item" :key="item.id" :path="this.path" />
       </div>
+    </div>
+    <div v-else>
+      <img src="../assets/no-data.png" class="h-[70vh] mx-auto object-cover" alt="">
     </div>
   </div>
 </template>
@@ -52,7 +56,6 @@ export default {
         .then((response) => {
           this.groupsRender = response.data;
           console.log(this.groupsRender);
-          // Call the filter method after data is fetched
           this.handleFilterGroups();
         });
     },

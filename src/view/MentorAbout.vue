@@ -5,18 +5,14 @@
       <h1 class="text-2xl">Mentor: {{ teacher.fullname }}</h1>
       <h1 class="text-xl my-2">Guruhlari:</h1>
     </div>
-    <div class="overflow-y-scroll h-[70vh] flex justify-around gap-4 flex-wrap">
-      <div v-for="group in teacher.groups" class="w-full">
-        <div
-          class="group_card rounded-md bg-white w-[30%] pb-3"
-          v-if="group?.status == 'continues'"
-        >
-          <div class="group_card_header w-full h-1/2">
-            <img
-              src="../assets/cartImage.jpg"
-              class="w-full h-full object-cover"
-              alt=""
-            />
+    <div
+      class="overflow-y-scroll w-full h-[70vh] flex-wrap flex gap-4"
+      v-if="teacher.groups.length > 0"
+    >
+      <div v-for="group in teacher.groups">
+        <div class="group_card rounded-md bg-white h-[350px] w-full pb-3">
+          <div class="group_card_header w-full text-center">
+            <i class="bx bx-user text-[100px]"></i>
           </div>
           <div class="group_card_body p-4">
             <h1 class="text-xl">Guruh raqami: {{ group.title }}</h1>
@@ -29,10 +25,16 @@
             </h1>
             <h1 class="text-xl">
               Guruhning Statusi:
-              <span class="capitalize">{{ group.status }}</span>
+              <span>{{
+                group.status == "continues"
+                  ? "Davom etyabti"
+                  : group.status == "completed"
+                  ? "Yakunlangan"
+                  : "O'chirilgan"
+              }}</span>
             </h1>
           </div>
-          <div class="group_card_footer text-end mt-[20px] px-4">
+          <div class="group_card_footer mt-[1.2rem] text-end px-4">
             <RouterLink
               :to="`/groups/${group.title}`"
               v-if="group.status !== 'completed'"
@@ -53,6 +55,9 @@
           </div>
         </div>
       </div>
+    </div>
+    <div class="w-1/2 mx-auto" v-else>
+      <img src="../assets/no-data.png" alt="">
     </div>
   </div>
 </template>

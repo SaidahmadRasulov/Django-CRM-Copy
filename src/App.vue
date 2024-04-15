@@ -1,8 +1,7 @@
 <template>
   <div class="flex justify-between" v-if="visibility">
     <LayoutNavbar />
-    <div class="vertical_line w-1 h-[100vh] bg-blue"></div>
-    <section class="w-4/5 bg-slate-300 p-4 h-[100vh]">
+    <section class="w-full pl-12 router_section p-4 h-[100vh]">
       <RouterView />
     </section>
   </div>

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1 class="text-2xl">O'quvchilar yo'qlamasi</h1>
+    <h1 class="text-xl">O'quvchilar yo'qlamasi</h1>
     <TableCheck />
   </div>
 </template>

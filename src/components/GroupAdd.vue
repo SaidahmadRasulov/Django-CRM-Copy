@@ -1,89 +1,95 @@
 <template>
-  <div>
-    <div class="form_add bg-blue p-4 rounded-md shadow-lg">
-      <h2 class="text-xl text-white mb-3">Guruh qo'shish</h2>
-      <div class="mb-2">
+  <div class="w-2/3 h-[500px] form_add rounded-md">
+    <div class="mb-2 flex flex-col">
+      <label for="group_title" class="text-lg">Guruhni qo'shish</label>
+      <input
+        placeholder="Guruh nomini kiriting"
+        type="text"
+        id="group_title"
+        v-model="group_add"
+        class="w-full border border-[#33333390] py-2 px-4 outline-none mt-2 rounded-md placeholder:text-sm"
+      />
+    </div>
+    <div class="mb-2 flex flex-col">
+      <label for="select" class="text-lg mb-2">Kursni tanlang</label>
+      <select
+        id="select"
+        class="w-full border border-[#33333390] p-2 outline-none rounded-md"
+        v-model="course_select"
+      >
+        <option :value="item" v-for="item in this.storedCourses">
+          {{ item.title }}
+        </option>
+      </select>
+    </div>
+    <div class="mb-2 text-lg flex flex-col">
+      <label for="continue">O'qish davomiyligi</label>
+      <input
+        type="number"
+        placeholder="Raqam kiriting"
+        id="continue"
+        v-model="group_continue"
+        class="w-full border border-[#33333390] py-2 px-4 outline-none mt-2 rounded-md text-sm placeholder:text-sm"
+      />
+    </div>
+    <div class="mb-2 flex flex-col">
+      <label for="select" class="text-[18px]">O'qish kunlari</label>
+      <select
+        id="select"
+        class="w-full border border-[#33333390] my-2 p-2 outline-none rounded-md"
+        v-model="study_select"
+      >
+        <option :value="day.val" v-for="day in this.study_days">
+          {{ day.title }}
+        </option>
+      </select>
+    </div>
+    <div class="mb-2">
+      <h1 class="text-lg mb-2">O'qish vaqti</h1>
+      <div class="flex gap-8 justify-between">
+        <!-- <label for="start" class="text-lg mr-2"
+              >Boshlanish</label
+            > -->
         <input
-          placeholder="Guruh nomini kiriting"
-          type="text"
-          id="group_title"
-          v-model="group_add"
-          class="w-full py-2 px-4 outline-none mt-4 rounded-md placeholder:text-lg"
+          type="time"
+          class="w-full border border-[#33333390] my-2 p-2 outline-none rounded-md"
+          id="start"
+          v-model="start_time"
+        />
+        <!-- <label for="start" class="text-lg mr-2 ">Tugashi</label> -->
+        <input
+          type="time"
+          id="start"
+          class="w-full border border-[#33333390] my-2 p-2 outline-none rounded-md"
+          v-model="end_time"
         />
       </div>
-      <div class="mb-2">
-        <label for="select" class="text-xl text-white">Kursni Tanlang</label>
+    </div>
+    <div class="flex gap-4 w-full">
+      <div class="mb-4 w-1/2">
+        <h1 class="mb-2 text-lg">Qachon ochilgan</h1>
+        <input type="date" class="p-2 outline-none rounded-md w-full border border-[#33333390]" v-model="date_add" />
+      </div>
+      <div class="mb-4 w-1/2">
+        <label for="select" class="text-lg">Mentor</label>
         <select
           id="select"
-          class="w-full my-2 p-2 outline-none rounded-md"
-          v-model="course_select"
+          class="w-full my-2 p-2 outline-none rounded-md border border-[#33333390]"
+          v-model="mentor_select"
         >
-          <option :value="item" v-for="item in this.storedCourses">
-            {{ item.title }}
+          <option :value="mentor" v-for="mentor in this.mentors">
+            {{ mentor.fullname }}
           </option>
         </select>
       </div>
-      <div class="mb-2">
-        <label for="select" class="text-xl text-white">O'qish Kunlari</label>
-        <select
-          id="select"
-          class="w-full my-2 p-2 outline-none rounded-md"
-          v-model="study_select"
-        >
-          <option :value="day.val" v-for="day in this.study_days">
-            {{ day.title }}
-          </option>
-        </select>
-      </div>
-      <div class="mb-4">
-        <input
-          type="number"
-          placeholder="O'qishning Davomiyligi"
-          v-model="group_continue"
-          class="w-full py-2 px-4 outline-none mt-4 rounded-md placeholder:text-lg"
-        />
-      </div>
-      <div class="flex justify-between gap-4">
-        <div class="mb-4">
-          <h1 class="text-xl text-white">O'qish vaqti</h1>
-          <div class="flex flex-col">
-            <div class="flex mt-2 w-full">
-              <label for="start" class="text-lg mr-2 text-white"
-                >Boshlanish</label
-              >
-              <input type="time" id="start" v-model="start_time" />
-            </div>
-            <div class="flex mt-2 w-full justify-between">
-              <label for="start" class="text-lg mr-2 text-white">Tugashi</label>
-              <input type="time" id="start" v-model="end_time" />
-            </div>
-          </div>
-        </div>
-        <div class="mb-4">
-          <h1 class="mb-2 text-white text-xl">Qachon o'chilgan</h1>
-          <input type="date" v-model="date_add" />
-        </div>
-        <div class="mb-4">
-          <label for="select" class="text-xl text-white">Mentor</label>
-          <select
-            id="select"
-            class="w-full my-2 p-2 outline-none rounded-md"
-            v-model="mentor_select"
-          >
-            <option :value="mentor" v-for="mentor in this.mentors">
-              {{ mentor.fullname }}
-            </option>
-          </select>
-        </div>
-      </div>
-      <div class="mt-4 text-end">
-        <button
-          class="py-2 px-4 bg-green-700 text-white rounded-md hover:bg-white border border-green-700 hover:text-green-700 transition-all delay-75"
-          @click="handleGroupAdd"
-        >
-          Qo'shish
-        </button>
-      </div>
+    </div>
+    <div class="text-end">
+      <button
+        class="py-2 px-4 bg-green-700 text-white rounded-md hover:bg-white border border-green-700 hover:text-green-700 transition-all delay-75"
+        @click="handleGroupAdd"
+      >
+        Qo'shish
+      </button>
     </div>
   </div>
 </template>

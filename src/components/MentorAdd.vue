@@ -1,12 +1,12 @@
 <template>
-  <div>
-    <div class="form_add bg-blue p-4 h-full rounded-md shadow-lg">
-      <label for="group" class="text-xl text-white">Mentor qo'shish</label>
+  <div class="w-1/3 mx-auto">
+    <div class="form_add bg-[#EFE7D8] p-4 h-full rounded-md shadow-lg">
+      <label for="group" class="text-lg">Mentor qo'shish</label>
       <div class="mb-6">
         <input
           type="text"
           placeholder="Ism-sharifi"
-          class="w-full py-2 px-4 outline-none mt-6 rounded-md"
+          class="w-full py-2 px-4 outline-none mt-6 rounded-md border border-[#33333390]"
           v-model="fullname"
         />
       </div>
@@ -14,7 +14,7 @@
         <input
           type="text"
           placeholder="Telefon raqami"
-          class="w-full py-2 px-4 outline-none mt-4 rounded-md"
+          class="w-full py-2 px-4 outline-none mt-4 rounded-md border border-[#33333390]"
           v-model="phone_number"
         />
       </div>
@@ -22,7 +22,7 @@
         <input
           type="date"
           placeholder="Telefon raqami"
-          class="w-full py-2 px-4 outline-none mt-4 rounded-md"
+          class="w-full py-2 px-4 outline-none mt-4 rounded-md border border-[#33333390]"
           v-model="birthday"
         />
       </div>
@@ -30,15 +30,15 @@
         <input
           type="text"
           placeholder="Location"
-          class="w-full py-2 px-4 outline-none mt-4 rounded-md"
+          class="w-full py-2 px-4 outline-none mt-4 rounded-md border border-[#33333390]"
           v-model="user_location"
         />
       </div>
       <div class="mb-6">
-        <label for="select" class="text-white text-xl">Kurs</label>
+        <label for="select" class="text-lg">Kurs</label>
         <select
           id="select"
-          class="w-full my-2 p-2 outline-none rounded-md"
+          class="w-full my-2 p-2 outline-none rounded-md border border-[#33333390]"
           v-model="course_select"
         >
           <option :value="item" v-for="item in this.storedCourses">
@@ -112,6 +112,7 @@ export default {
             }
           );
           alert("Mentor muvafaqiyatli koshildi");
+          this.storedModalValue = false;
           this.fullname = "";
           this.phone_number = "";
           this.birthday = "";

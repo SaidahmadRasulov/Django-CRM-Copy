@@ -1,6 +1,6 @@
 <template>
   <div class="delete_title mb-4 relative">
-    <h1 class="text-2xl">O'chirilganlar ro'yxati</h1>
+    <h1 class="text-xl">O'chirilganlar ro'yxati</h1>
   </div>
   <div class="deleted_content">
     <TableComponent />
