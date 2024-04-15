@@ -9,7 +9,7 @@
     ></i>
 
     <div
-      class="form_content w-1/2 mt-20 mx-auto bg-[#edd4c2] shadow-lg p-4 rounded-md"
+      class="form_content w-1/2 mt-20 mx-auto bg-white shadow-lg p-4 rounded-md"
     >
       <div class="mb-6 flex flex-col">
         <label for="name" class="mb-3 text-lg">Ism-sharifi</label>

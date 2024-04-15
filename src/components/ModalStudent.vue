@@ -9,7 +9,7 @@
     ></i>
 
     <div
-      class="form_content w-1/2 mt-20 mx-auto bg-[#edd4c2] shadow-lg p-4 rounded-md"
+      class="form_content w-1/2 mt-20 mx-auto bg-white shadow-lg p-4 rounded-md"
     >
       <div class="mb-6 flex flex-col">
         <label for="name" class="mb-3 text-lg">Ism-sharifi</label>
@@ -34,7 +34,7 @@
         />
       </div>
       <div class="mb-6 flex flex-col">
-        <label for="parent" class="text-xl text-white"
+        <label for="parent" class="text-xl"
           >Ota-onasining ism-sharifi va tel raqami</label
         >
         <input
@@ -45,7 +45,7 @@
       </div>
       <div class="flex justify-between gap-4">
         <div class="course_box flex flex-col gap-2 w-1/2">
-          <label for="course" class="text-xl text-white mb-2">Kurs</label>
+          <label for="course" class="text-xl mb-2">Kurs</label>
           <select
             id="course"
             class="px-4 py-1 rounded-md outline-none cursor-pointer border border-[#33333390]"
@@ -57,7 +57,7 @@
           </select>
         </div>
         <div class="comment_box flex flex-col w-1/2">
-          <label for="comment" class="text-xl text-white"
+          <label for="comment" class="text-xl"
             >Qoshimcha ma'lumot</label
           >
           <input

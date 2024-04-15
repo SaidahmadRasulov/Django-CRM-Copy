@@ -40,7 +40,7 @@
         <input
           id="parent"
           v-model="parents"
-          class=" border border-[#3333339] h-20 p-2 mt-3 outline-none rounded-md"
+          class=" border border-[#3333339] p-2 mt-3 outline-none rounded-md"
         ></input>
       </div>
       <div class="flex justify-between gap-4">

@@ -12,7 +12,7 @@
       class="form_content w-1/2 mt-20 mx-auto bg-white shadow-lg p-4 rounded-md"
     >
       <div class="mb-6 flex flex-col">
-        <label for="name" class="mb-3 text-xl ">Ism-sharifi</label>
+        <label for="name" class="mb-3 text-xl">Ism-sharifi</label>
         <input
           type="text"
           name="fullname"
@@ -33,19 +33,29 @@
           autocomplete="false"
         />
       </div>
+      <div class="mb-6">
+        <label for="phone" class="text-xl">Qayerdan kelgan</label>
+        <input
+          type="text"
+          name="coming"
+          class="p-2 px-5 rounded-md outline-none w-full mt-3 border border-[#3333339]"
+          v-model="coming_place"
+          autocomplete="false"
+        />
+      </div>
       <div class="mb-6 flex flex-col">
-        <label for="parent" class="text-xl "
+        <label for="parent" class="text-xl"
           >Ota-onasining ism-sharifi va tel raqami</label
         >
         <input
           id="parent"
           v-model="parents"
           class="p-2 mt-3 outline-none rounded-md border border-[#3333339]"
-        ></input>
+        />
       </div>
-      <div class="flex items-center justify-between">
+      <div class="flex items-center gap-4 justify-between">
         <div class="group_box flex flex-col gap-2 w-1/3">
-          <label for="group" class="text-xl ">Guruhlar</label>
+          <label for="group" class="text-xl">Guruhlar</label>
           <select
             id="group"
             class="px-2 py-1 rounded-md outline-none cursor-pointer border border-[#3333339]"
@@ -56,8 +66,16 @@
             </option>
           </select>
         </div>
-        <div class="course_box flex flex-col gap-2 w-1/2">
-          <label for="course" class="text-xl ">Kurs</label>
+        <div class="coming_box flex flex-col gap-2 w-1/3">
+          <label for="coming" class="text-xl">Qachon kelgan</label>
+          <input
+            type="date"
+            class="px-2 py-1 rounded-md outline-none cursor-pointer border border-[#3333339]"
+            v-model="coming_date"
+          />
+        </div>
+        <div class="course_box flex flex-col gap-2 w-1/3">
+          <label for="course" class="text-xl">Kurs</label>
           <select
             id="course"
             class="px-2 py-1 rounded-md outline-none cursor-pointer border border-[#3333339]"
@@ -95,6 +113,8 @@ export default {
       phone_number: "",
       storedLead: {},
       groups: [],
+      coming_date: "",
+      coming_place: "",
     };
   },
   methods: {
@@ -111,6 +131,8 @@ export default {
         phone_number: this.phone_number,
         course: this.courseSelect.id,
         group: this.groupSelect.id,
+        added_date: this.coming_date,
+        coming: this.coming_place,
       };
 
       if (
@@ -118,7 +140,9 @@ export default {
         this.parents !== "" &&
         this.phone_number !== "" &&
         this.courseSelect !== "" &&
-        this.groupSelect !== ""
+        this.groupSelect !== "" &&
+        this.coming_date !== "" &&
+        this.coming_place !== ""
       ) {
         try {
           const response = await fetch(
@@ -138,6 +162,8 @@ export default {
           this.phone_number = "";
           this.courseSelect = "";
           this.groupSelect = "";
+          this.coming_date = "";
+          this.coming_place = "";
         } catch (error) {
           console.error("Error:", error);
         }

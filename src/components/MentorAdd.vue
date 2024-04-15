@@ -1,6 +1,6 @@
 <template>
   <div class="w-1/3 mx-auto">
-    <div class="form_add bg-[#EFE7D8] p-4 h-full rounded-md shadow-lg">
+    <div class="form_add bg-white p-4 h-full rounded-md shadow-lg">
       <label for="group" class="text-lg">Mentor qo'shish</label>
       <div class="mb-6">
         <input
