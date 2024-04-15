@@ -29,7 +29,7 @@
       <div class="mb-6">
         <input
           type="text"
-          placeholder="Location"
+          placeholder="Yashash manzili"
           class="w-full py-2 px-4 outline-none mt-4 rounded-md border border-[#33333390]"
           v-model="user_location"
         />

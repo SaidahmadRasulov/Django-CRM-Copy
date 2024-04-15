@@ -33,6 +33,15 @@
           autocomplete="false"
         />
       </div>
+      <div class="mb-6">
+        <label for="phone" class="text-lg">Qayerdan kelgan</label>
+        <input
+          type="text"
+          class="p-2 px-5 rounded-md outline-none w-full mt-3 border border-[#33333390]"
+          v-model="coming_place"
+          autocomplete="false"
+        />
+      </div>
       <div class="mb-6 flex flex-col">
         <label for="parent" class="text-xl "
           >Ota-onasining ism-sharifi va tel raqami</label
@@ -108,6 +117,7 @@ export default {
       parents: "",
       phone_number: "",
       coming_date: "",
+      coming_place: ""
     };
   },
   methods: {
@@ -125,6 +135,7 @@ export default {
         course: this.courseSelect.id,
         group: this.groupSelect.id,
         added_date: this.coming_date,
+        coming: this.coming_place
       };
 
       if (

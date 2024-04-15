@@ -125,6 +125,7 @@ export default {
         .then((response) => response.json())
         .then((response) => {
           this.students = response.data;
+          console.log(this.students)
         });
     },
     handleEdit(obj) {

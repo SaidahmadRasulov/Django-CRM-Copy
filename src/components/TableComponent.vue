@@ -12,31 +12,34 @@
         <option value="py">Python</option>
       </select>
     </div>
-    <table
-      class="w-full table-fixed text-center mx-auto border border-[#33333390]"
-      v-if="filteredStudents.length > 0"
-    >
-      <thead>
-        <tr class="text-[12px] bg-[#333] text-white border border-[#33333390]">
-          <th class="px-4 py-2">#</th>
-          <th class="px-4 py-2">Ism-sharifi</th>
-          <th class="px-4 py-2">Tel raqam</th>
-          <th class="px-4 py-2">Ota-ona</th>
-          <th class="px-4 py-2">Kurs</th>
-          <th class="px-4 py-2">Guruh</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="(student, index) in filteredStudents" :key="student.id">
-          <td class="border px-4 py-2">{{ index + 1 }}</td>
-          <td class="border px-4 py-2">{{ student.fullname }}</td>
-          <td class="border px-4 py-2">{{ student.phone_number }}</td>
-          <td class="border px-4 py-2">{{ student.parents }}</td>
-          <td class="border px-4 py-2">{{ student.course_info.title }}</td>
-          <td class="border px-4 py-2">{{ student.group_info.title }}</td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="overflow-y-scroll h-full" v-if="filteredStudents.length > 0">
+      <table
+        class="w-full table-fixed text-center mx-auto border border-[#33333390]"
+      >
+        <thead>
+          <tr
+            class="text-[12px] bg-[#333] text-white border border-[#33333390]"
+          >
+            <th class="px-4 py-2">#</th>
+            <th class="px-4 py-2">Ism-sharifi</th>
+            <th class="px-4 py-2">Tel raqam</th>
+            <th class="px-4 py-2">Ota-ona</th>
+            <th class="px-4 py-2">Kurs</th>
+            <th class="px-4 py-2">Guruh</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(student, index) in filteredStudents" :key="student.id">
+            <td class="border px-4 py-2">{{ index + 1 }}</td>
+            <td class="border px-4 py-2">{{ student.fullname }}</td>
+            <td class="border px-4 py-2">{{ student.phone_number }}</td>
+            <td class="border px-4 py-2">{{ student.parents }}</td>
+            <td class="border px-4 py-2">{{ student.course_info.title }}</td>
+            <td class="border px-4 py-2">{{ student.group_info.title }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
     <table
       class="w-full table-fixed text-center mx-auto border-[#33333390]"
       v-else
