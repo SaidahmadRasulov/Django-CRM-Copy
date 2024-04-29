@@ -67,7 +67,7 @@ export default {
   },
   methods: {
     getCompleted() {
-      fetch("http://django-admin.uz/api/customer/completed/students/", {
+      fetch("https://django-admin.uz/api/customer/completed/students/", {
         headers: {
           Authorization: `Bearer ${this.token}`,
           "Content-type": "application/json",
@@ -81,7 +81,7 @@ export default {
         });
     },
     getGroups() {
-      fetch("http://django-admin.uz/api/courses/all/", {
+      fetch("https://django-admin.uz/api/courses/all/", {
         headers: {
           Authorization: `Bearer ${this.token}`,
           "Content-type": "application/json",

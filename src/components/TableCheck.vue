@@ -45,7 +45,7 @@ export default {
   },
   methods: {
     async getGroups() {
-      const response = await fetch("http://django-admin.uz/api/groups/all/", {
+      const response = await fetch("https://django-admin.uz/api/groups/all/", {
         headers: {
           Authorization: `Bearer ${this.token}`,
           "Content-type": "application/json",

@@ -43,7 +43,7 @@ export default {
   },
   methods: {
     getMentors() {
-      fetch("http://django-admin.uz/api/customer/mentors/all/", {
+      fetch("https://django-admin.uz/api/customer/mentors/all/", {
         headers: {
           Authorization: `Bearer ${this.token}`,
           "Content-type": "application/json",

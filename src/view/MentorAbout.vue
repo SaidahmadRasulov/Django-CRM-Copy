@@ -81,7 +81,7 @@ export default {
       });
     },
     getMentors() {
-      fetch("http://django-admin.uz/api/customer/mentors/all/", {
+      fetch("https://django-admin.uz/api/customer/mentors/all/", {
         headers: {
           Authorization: `Bearer ${this.token}`,
           "Content-type": "application/json",
@@ -97,7 +97,7 @@ export default {
     },
     getTeacher() {
       fetch(
-        `http://django-admin.uz/api/customer/mentors/${this.selectedMentor.id}/`,
+        `https://django-admin.uz/api/customer/mentors/${this.selectedMentor.id}/`,
         {
           headers: {
             Authorization: `Bearer ${this.token}`,

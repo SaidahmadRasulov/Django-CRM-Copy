@@ -115,7 +115,7 @@ export default {
   },
   methods: {
     getStudents() {
-      fetch("http://django-admin.uz/api/customer/students/all/", {
+      fetch("https://django-admin.uz/api/customer/students/all/", {
         headers: {
           Authorization: `Bearer ${this.token}`,
           "Content-type": "application/json",
@@ -139,7 +139,7 @@ export default {
       let confirm = window.confirm("O'chirilishiga rozimisz?");
       if (confirm) {
         const response = await fetch(
-          `http://django-admin.uz/api/customer/students/${id}/delete/`,
+          `https://django-admin.uz/api/customer/students/${id}/delete/`,
           {
             method: "DELETE",
             headers: {

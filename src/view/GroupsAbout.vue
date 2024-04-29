@@ -109,7 +109,7 @@ export default {
       });
     },
     getGroup() {
-      fetch(`http://django-admin.uz/api/groups/${this.takedGroup.id}/`, {
+      fetch(`https://django-admin.uz/api/groups/${this.takedGroup.id}/`, {
         headers: {
           Authorization: `Bearer ${this.token}`,
           "Content-type": "application/json",
@@ -123,7 +123,7 @@ export default {
         });
     },
     getGroups() {
-      fetch("http://django-admin.uz/api/groups/all/", {
+      fetch("https://django-admin.uz/api/groups/all/", {
         headers: {
           Authorization: `Bearer ${this.token}`,
           "Content-type": "application/json",
@@ -138,7 +138,7 @@ export default {
         });
     },
     getAttendaces() {
-      fetch("http://django-admin.uz/api/attendances/all/", {
+      fetch("https://django-admin.uz/api/attendances/all/", {
         headers: {
           Authorization: `Bearer ${this.token}`,
           "Content-type": "application/json",
@@ -167,7 +167,7 @@ export default {
     async postStartStatus() {
       try {
         const response = await fetch(
-          "http://django-admin.uz/api/groups/start/",
+          "https://django-admin.uz/api/groups/start/",
           {
             method: "POST",
             headers: {
@@ -192,7 +192,7 @@ export default {
         let confirm = window.confirm("Anniq tugadimi?");
         if (confirm) {
           const response = await fetch(
-            "http://django-admin.uz/api/groups/complete/",
+            "https://django-admin.uz/api/groups/complete/",
             {
               method: "POST",
               headers: {
@@ -225,7 +225,7 @@ export default {
           .padStart(2, "0")}-${date.getDate().toString().padStart(2, "0")}`;
 
         const response = await fetch(
-          `http://django-admin.uz/api/attendances/create/`,
+          `https://django-admin.uz/api/attendances/create/`,
           {
             method: "POST",
             headers: {
@@ -257,7 +257,7 @@ export default {
           .toString()
           .padStart(2, "0")}-${date.getDate().toString().padStart(2, "0")}`;
         const response = await fetch(
-          `http://django-admin.uz/api/attendances/create/`,
+          `https://django-admin.uz/api/attendances/create/`,
           {
             method: "POST",
             headers: {

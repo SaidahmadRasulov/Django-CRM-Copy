@@ -66,7 +66,7 @@ export default {
   },
   methods: {
     getDeletedStudents() {
-      fetch("http://django-admin.uz/api/customer/deleted/students/", {
+      fetch("https://django-admin.uz/api/customer/deleted/students/", {
         headers: {
           Authorization: `Bearer ${this.token}`,
           "Content-type": "application/json",

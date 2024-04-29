@@ -72,7 +72,7 @@ export default {
   },
   methods: {
     getCourse() {
-      fetch("http://django-admin.uz/api/courses/all/", {
+      fetch("https://django-admin.uz/api/courses/all/", {
         headers: {
           Authorization: `Bearer ${this.token}`,
           "Content-type": "application/json",
@@ -101,7 +101,7 @@ export default {
       ) {
         try {
           const response = await fetch(
-            "http://django-admin.uz/api/customer/mentors/create/",
+            "https://django-admin.uz/api/customer/mentors/create/",
             {
               method: "POST",
               headers: {
