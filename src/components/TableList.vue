@@ -1,5 +1,8 @@
 <template>
-  <section class="mt-3 w-full mx-auto h-[600px] overflow-y-scroll">
+  <section
+    class="mt-3 w-full mx-auto h-auto overflow-y-scroll"
+    :class="{ 'h-[600px]': filteredStudents.length > 0 }"
+  >
     <div class="select_box text-end">
       <select
         id="select"
@@ -125,7 +128,7 @@ export default {
         .then((response) => response.json())
         .then((response) => {
           this.students = response.data;
-          console.log(this.students)
+          console.log(this.students);
         });
     },
     handleEdit(obj) {

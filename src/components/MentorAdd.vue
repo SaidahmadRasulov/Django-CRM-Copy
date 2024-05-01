@@ -118,7 +118,6 @@ export default {
           this.birthday = "";
           this.user_location = "";
           this.course_select = "";
-          window.location.reload();
         } catch (error) {
           console.log(error);
         }
