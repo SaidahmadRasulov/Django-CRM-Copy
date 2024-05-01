@@ -8,18 +8,21 @@
       <div class="lg:w-full">
         <GroupAdd />
       </div>
+      <div class="lg:w-full">
+        <CourseAdd />
+      </div>
     </div>
   </section>
 </template>
 
 <script>
-import MentorAdd from "./MentorAdd.vue";
 import GroupAdd from "./GroupAdd.vue";
 import RegistForm from "./RegistForm.vue";
+import CourseAdd from "./CourseAdd.vue";
 
 export default {
   
-  components: { MentorAdd, GroupAdd, RegistForm },
+  components: { GroupAdd, RegistForm, CourseAdd },
 };
 </script>
 

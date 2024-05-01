@@ -58,7 +58,7 @@
         v-model="parent"
         placeholder="Ota yoki Onaning tel-raqami"
         class="border border-[#33333390] resize-none h-10 p-2 mt-3 outline-none rounded-md"
-      ></input>
+      >
     </div>
     <div class="flex items-center gap-4 justify-between">
       <div class="group_box flex flex-col gap-2 w-1/3">
@@ -89,7 +89,7 @@
         <label for="teacher" class="text-xl">Mentor</label>
         <select
           id="teacher"
-          class="px-2 border border-[#33333390] py-1 rounded-md outline-none cursor-pointer"
+          class="px-2 border border-[#33333390] py-1 rounded-md outline-none w-full cursor-pointer"
           v-model="teacherSelect"
         >
           <option v-for="item in teachers" :value="item.value">
@@ -198,6 +198,7 @@ export default {
         .then((response) => response.json())
         .then((data) => {
           this.courses = data;
+          console.log(this.courses);
           this.courses = this.courses.slice(0, 3);
         });
     },
