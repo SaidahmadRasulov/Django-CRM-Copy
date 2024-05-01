@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from "vue-router";
+import { createRouter, createWebHashHistory } from "vue-router";
 import Home from "../view/Home.vue";
 import StudentsCheking from "../view/StudentsCheking.vue";
 import Students from "../view/Students.vue";
@@ -13,7 +13,7 @@ import SignIn from "../view/SignIn.vue";
 import Trash from "../view/Trash.vue";
 
 const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHashHistory(),
   routes: [
     {
       name: "home",
