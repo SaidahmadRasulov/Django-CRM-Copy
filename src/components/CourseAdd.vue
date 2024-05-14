@@ -40,7 +40,7 @@ export default {
       try {
         if (this.course_title !== "") {
           const response = await fetch(
-            `https://admin.djangoacademy.uz/api/courses/create/`,
+            `https://django-admin.uz/api/courses/create/`,
             {
               method: "POST",
               headers: {
@@ -50,7 +50,7 @@ export default {
               body: JSON.stringify(new_course),
             }
           );
-          await window.location.reload();
+          console.log(response)
         } else {
           alert("Ma'lumotni kiriting!");
         }
