@@ -15,23 +15,29 @@
       >
         <MentorCard v-for="teacher in mentors" :teacher="teacher" />
       </div>
-      
     </div>
-    <div  v-else>
+    <div v-else>
       <img class="mx-auto h-[70vh] w-1/2" src="../assets/no-data.png" alt="" />
     </div>
     <div
-        v-if="this.add_modal"
-        class="absolute left-0 top-0 backdrop-brightness-50 w-full h-[100vh]"
-      >
-        <ModalMentorAdd />
-      </div>
+      v-if="this.add_modal"
+      class="absolute left-0 top-0 backdrop-brightness-50 w-full h-[100vh]"
+    >
+      <ModalMentorAdd />
+    </div>
+    <div
+      v-if="this.edit_modal"
+      class="absolute left-0 top-0 backdrop-brightness-50 w-full h-[100vh]"
+    >
+      <ModalMentorEdit />
+    </div>
   </div>
 </template>
 <script>
 import MentorAdd from "../components/MentorAdd.vue";
 import MentorCard from "../components/MentorCard.vue";
 import ModalMentorAdd from "../components/ModalMentorAdd.vue";
+import ModalMentorEdit from "../components/ModalMentorEdit.vue";
 
 export default {
   data() {
@@ -39,6 +45,7 @@ export default {
       token: localStorage.getItem("token"),
       mentors: [],
       add_modal: false,
+      edit_modal: false,
     };
   },
   methods: {
@@ -65,6 +72,9 @@ export default {
     add_modal(newVal) {
       localStorage.setItem("mentor_add_modal", JSON.stringify(newVal));
     },
+    edit_modal(newVal) {
+      localStorage.setItem("mentor_edit_modal", JSON.stringify(newVal));
+    },
   },
   mounted() {
     this.getMentors();
@@ -72,8 +82,14 @@ export default {
     if (storedValue !== null) {
       this.add_modal = storedValue;
     }
+    const storedEditValue = JSON.parse(
+      localStorage.getItem("mentor_edit_modal")
+    );
+    if (storedEditValue !== null) {
+      this.edit_modal = storedEditValue;
+    }
   },
-  components: { MentorCard, MentorAdd, ModalMentorAdd },
+  components: { MentorCard, MentorAdd, ModalMentorAdd, ModalMentorEdit },
 };
 </script>
 <style lang=""></style>

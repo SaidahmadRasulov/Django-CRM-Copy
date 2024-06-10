@@ -1,10 +1,10 @@
 <template>
-  <div class="card p-1 w-full h-[330px] shadow-md bg-white rounded-md">
+  <div class="card p-1 w-full h-[360px] shadow-md bg-white rounded-md">
     <div class="card_header text-center">
       <i class='bx bx-group text-[100px]'></i>
     </div>
     <div class="card_body p-4">
-      <h1 class="text-lg">Guruh Raqami: {{ item.title }}</h1>
+      <h1 class="text-lg h-[60px]">Guruh Raqami: {{ item.title }}</h1>
       <h2>O'quvchilar Soni: {{ item.students_count }}</h2>
       <h2>O'qish kunlari: {{ item.study_day }}</h2>
       <h2>Qachon o'chilgan: {{ item.added_date }}</h2>
