@@ -8,9 +8,7 @@
           v-model="tableSelect"
         >
           <option value="all">Hammasi</option>
-          <option value="dev">Dasturlash</option>
-          <option value="des">Grafik Dizayn</option>
-          <option value="py">Python</option>
+          <option :value="item.val" v-for="item in this.courses">{{item.title}}</option>
         </select>
       </div>
     </div>
@@ -63,6 +61,7 @@ export default {
       token: localStorage.getItem("token"),
       groups: [],
       groupSelect: "",
+      courses: []
     };
   },
   methods: {
@@ -92,6 +91,19 @@ export default {
         .then((data) => {
           this.courses = data;
           console.log("Groups: ", this.groups);
+        });
+    },
+    getCourse() {
+      fetch("https://django-admin.uz/api/courses/all/", {
+        headers: {
+          Authorization: `Bearer ${this.token}`,
+          "Content-type": "application/json",
+        },
+        credentials: "include",
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          this.courses = data;
         });
     },
   },

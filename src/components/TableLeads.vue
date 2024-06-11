@@ -12,10 +12,10 @@
         class="mb-4 p-2 outline-none rounded-md"
         v-model="tableSelect"
       >
-        <option value="all">Hammasi</option>
-        <option value="dev">Dasturlash</option>
-        <option value="des">Grafik Dizayn</option>
-        <option value="py">Python</option>
+      <option value="all">Hammasi</option>
+        <option :value="item.val" v-for="item in this.courses">
+          {{ item.title }}
+        </option>
       </select>
     </div>
     <table
@@ -34,7 +34,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr ref="trRef" v-for="(student, index) in leads" :key="student.id">
+        <tr ref="trRef" v-for="(student, index) in filteredLeads" :key="student.id">
           <td class="border px-4 py-2">{{ index + 1 }}</td>
           <td class="border px-4 py-2">{{ student.fullname }}</td>
           <td class="border px-4 py-2">{{ student.phone_number }}</td>
@@ -44,7 +44,7 @@
           <td class="border px-4 py-2">
             <div class="flex items-center justify-center gap-1">
               <button
-                class="py-1 px-2  text-lg rounded-lg hover:cursor-pointer"
+                class="py-1 px-2 text-lg rounded-lg hover:cursor-pointer"
                 @click="handleEdit(student)"
               >
                 <i class="bx bx-pencil text-blue"></i>
@@ -56,7 +56,7 @@
                 <i class="bx bx-trash text-red-600"></i>
               </button>
               <button
-                class="py-1 px-2  text-lg rounded-lg hover:cursor-pointer"
+                class="py-1 px-2 text-lg rounded-lg hover:cursor-pointer"
                 @click="handleAdd(student)"
               >
                 <i class="bx bx-check text-green-600"></i>
@@ -66,10 +66,7 @@
         </tr>
       </tbody>
     </table>
-    <table
-      class="w-full table-fixed text-center mx-auto"
-      v-else
-    >
+    <table class="w-full table-fixed text-center mx-auto" v-else>
       <tbody>
         <tr>
           <td colspan="9">
@@ -106,6 +103,7 @@ export default {
       token: localStorage.getItem("token"),
       tableSelect: "all",
       trashArray: [],
+      courses: [],
       toggleEditLead: localStorage.getItem("modal-edit"),
       toggleAdd: localStorage.getItem("modal-add"),
       toggleLead: localStorage.getItem("modal-lead"),
@@ -116,7 +114,6 @@ export default {
   methods: {
     handleAddLead() {
       this.toggleAdd = true;
-      console.log(this.toggleAdd);
       localStorage.setItem("modal-add", JSON.stringify(this.toggleAdd));
     },
     handleAdd(obj) {
@@ -159,7 +156,19 @@ export default {
         .then((response) => response.json())
         .then((response) => {
           this.leads = response.data;
-          console.log("Leads: ", this.leads);
+        });
+    },
+    getCourse() {
+      fetch("https://django-admin.uz/api/courses/all/", {
+        headers: {
+          Authorization: `Bearer ${this.token}`,
+          "Content-type": "application/json",
+        },
+        credentials: "include",
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          this.courses = data;
         });
     },
   },
@@ -176,12 +185,22 @@ export default {
   },
   mounted() {
     this.getLeads();
+    this.getCourse();
     if (this.leads.length < 0) {
       this.toggleAdd = true;
       localStorage.setItem("modal-add", JSON.stringify(this.toggleAdd));
     }
     this.toggleAdd = JSON.parse(localStorage.getItem("modal-add")) || false;
     this.toggleLead = JSON.parse(localStorage.getItem("modal-lead")) || false;
+  },
+  computed: {
+    filteredLeads() {
+      if(this.tableSelect == 'all') {
+        return this.leads
+      } else {
+        return this.leads.filter((item) => item.course_info.val == this.tableSelect)
+      }
+    }
   },
   components: { ModalStudent, LeadAdd, ModalLead },
 };

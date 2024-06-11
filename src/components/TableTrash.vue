@@ -8,21 +8,21 @@
         @change="handleFilterGroups"
       >
         <option value="all">Hammasi</option>
-        <option value="dev">Dasturlash</option>
-        <option value="des">Grafik Design</option>
-        <option value="py">Python</option>
+        <option v-for="item in courses" :key="item.val" :value="item.val">
+          {{ item.title }}
+        </option>
       </select>
     </div>
     <div
       class="flex gap-4 flex-wrap h-[600px] p-4 overflow-y-scroll"
-      v-if="this.groupsRender.length > 0"
+      v-if="filteredGroups.length > 0"
     >
-      <div class="card_content flex w-1/5" v-for="item in filteredGroups">
-        <Card :item="item" :key="item.id" :path="this.path" />
+      <div class="card_content flex w-1/5" v-for="item in filteredGroups" :key="item.id">
+        <Card :item="item" :path="path" />
       </div>
     </div>
     <div v-else>
-      <img src="../assets/no-data.png" class="mx-auto h-[70vh]" alt="">
+      <img src="../assets/no-data.png" class="mx-auto h-[70vh]" alt="No data available" />
     </div>
   </div>
 </template>
@@ -38,39 +38,58 @@ export default {
       filteredGroups: [],
       path: "payments",
       token: localStorage.getItem("token"),
+      courses: [],
     };
   },
   mounted() {
     this.getGroups();
+    this.getCourses();
   },
   methods: {
     async getGroups() {
-      const response = await fetch("https://django-admin.uz/api/groups/all/", {
-        headers: {
-          Authorization: `Bearer ${this.token}`,
-          "Content-type": "application/json",
-        },
-        credentials: "include",
-      })
-        .then((response) => response.json())
-        .then((response) => {
-          this.groupsRender = response.data;
-          console.log("Group Render: ", this.groupsRender);
-          this.handleFilterGroups();
+      try {
+        const response = await fetch("https://django-admin.uz/api/groups/all/", {
+          headers: {
+            Authorization: `Bearer ${this.token}`,
+            "Content-type": "application/json",
+          },
+          credentials: "include",
         });
+        const data = await response.json();
+        this.groupsRender = data.data;
+        this.handleFilterGroups();
+      } catch (error) {
+        console.error("Error fetching groups:", error);
+      }
+    },
+    async getCourses() {
+      try {
+        const response = await fetch("https://django-admin.uz/api/courses/all/", {
+          headers: {
+            Authorization: `Bearer ${this.token}`,
+            "Content-type": "application/json",
+          },
+        });
+        const data = await response.json();
+        this.courses = data;
+      } catch (error) {
+        console.error("Error fetching courses:", error);
+      }
     },
     handleFilterGroups() {
-      this.filteredGroups = this.groupsRender.filter((item) => {
-        if (this.groupsSelect == "all") {
-          return true; // Return all items
-        } else {
-          return item.course_info.val == this.groupsSelect;
-        }
-      });
+      if (this.groupsSelect === "all") {
+        this.filteredGroups = this.groupsRender;
+      } else {
+        this.filteredGroups = this.groupsRender.filter(
+          (item) => item.course_info.val === this.groupsSelect
+        );
+      }
     },
   },
   components: { Card },
 };
 </script>
 
-<style lang=""></style>
+<style scoped>
+/* Add any scoped styles here if needed */
+</style>

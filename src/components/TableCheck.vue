@@ -7,10 +7,10 @@
         class="p-2 outline-none rounded-md shadow-md"
         @change="handleFilterGroups"
       >
-        <option value="all">Hammasi</option>
-        <option value="dev">Dasturlash</option>
-        <option value="des">Grafik Design</option>
-        <option value="py">Python</option>
+      <option value="all">Hammasi</option>
+        <option v-for="item in this.courses" :value="item.val">
+          {{ item.title }}
+        </option>
       </select>
     </div>
     <div
@@ -22,7 +22,11 @@
       </div>
     </div>
     <div v-else>
-      <img src="../assets/no-data.png" class="h-[70vh] mx-auto object-cover" alt="">
+      <img
+        src="../assets/no-data.png"
+        class="h-[70vh] mx-auto object-cover"
+        alt=""
+      />
     </div>
   </div>
 </template>
@@ -38,10 +42,12 @@ export default {
       filteredGroups: [],
       path: "groups",
       token: localStorage.getItem("token"),
+      courses: [],
     };
   },
   mounted() {
     this.getGroups();
+    this.getCourse();
   },
   methods: {
     async getGroups() {
@@ -67,6 +73,19 @@ export default {
           return item.course_info.val == this.groupsSelect;
         }
       });
+    },
+    getCourse() {
+      fetch("https://django-admin.uz/api/courses/all/", {
+        headers: {
+          Authorization: `Bearer ${this.token}`,
+          "Content-type": "application/json",
+        },
+        credentials: "include",
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          this.courses = data;
+        });
     },
   },
   components: { Card },

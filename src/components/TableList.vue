@@ -1,20 +1,19 @@
 <template>
+  <div class="select_box text-end">
+    <select
+      id="select"
+      class="mb-4 p-2 outline-none rounded-md mr-2 border border-[#33333390]"
+      v-model="tableSelect"
+    >
+    <option value="all">Hammasi</option>
+      <option v-for="item in this.courses" :value="item.val">{{ item.title }}</option>
+    </select>
+  </div>
   <section
-    class="mt-3 w-full mx-auto h-auto overflow-y-scroll"
+    class="mt-3 w-full mx-auto h-[600px] overflow-y-scroll"
     :class="{ 'h-[600px]': filteredStudents.length > 0 }"
   >
-    <div class="select_box text-end">
-      <select
-        id="select"
-        class="mb-4 p-2 outline-none rounded-md mr-2 border border-[#33333390]"
-        v-model="tableSelect"
-      >
-        <option value="all">Hammasi</option>
-        <option value="dev">Dasturlash</option>
-        <option value="des">Grafik Dizayn</option>
-        <option value="py">Python</option>
-      </select>
-    </div>
+    
     <table
       v-if="filteredStudents.length > 0"
       class="w-full table-fixed text-center mx-auto border border-[#33333390]"
@@ -114,6 +113,7 @@ export default {
       toggleShow: localStorage.getItem("modal"),
       completedStudents: [],
       editObj: {},
+      courses: []
     };
   },
   methods: {
@@ -158,9 +158,21 @@ export default {
         alert("O'chirilish amalga oshirilmadi.");
       }
     },
+    getCourse() {
+      fetch('https://django-admin.uz/api/courses/all/', {
+        headers: {
+          Authorization: `Bearer ${this.token}`,
+          "Content-type": "application/json"
+        },
+        credentials: "include"
+      }).then(response => response.json()).then((data) => {
+        this.courses = data
+      })
+    }
   },
   mounted() {
     this.getStudents();
+    this.getCourse()
     this.toggleShow = JSON.parse(localStorage.getItem("modal")) || false; // Set default value if no value found in localStorage
   },
   watch: {

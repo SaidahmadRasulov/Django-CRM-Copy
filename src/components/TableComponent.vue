@@ -7,9 +7,7 @@
         v-model="tableSelect"
       >
         <option value="all">Hammasi</option>
-        <option value="dev">Dasturlash</option>
-        <option value="des">Grafik Dizayn</option>
-        <option value="py">Python</option>
+        <option :value="item.val" v-for="item in this.courses">{{ item.title }}</option>
       </select>
     </div>
     <div class="overflow-y-scroll h-full" v-if="filteredStudents.length > 0">
@@ -62,6 +60,7 @@ export default {
       students: [],
       token: localStorage.getItem("token"),
       tableSelect: "all",
+      courses: []
     };
   },
   methods: {
@@ -82,6 +81,19 @@ export default {
           console.error("Error fetching deleted students:", error);
         });
     },
+    getCourse() {
+      fetch("https://django-admin.uz/api/courses/all/", {
+        headers: {
+          Authorization: `Bearer ${this.token}`,
+          "Content-type": "application/json",
+        },
+        credentials: "include",
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          this.courses = data;
+        });
+    },
   },
   computed: {
     filteredStudents() {
@@ -96,6 +108,7 @@ export default {
   },
   mounted() {
     this.getDeletedStudents();
+    this.getCourse()
   },
 };
 </script>
