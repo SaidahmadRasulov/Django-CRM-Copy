@@ -11,7 +11,7 @@
   </div>
   <section
     class="mt-3 w-full mx-auto h-[1000px] overflow-y-scroll"
-    :class="{ 'h-[600px]': filteredStudents.length > 0 }"
+    :class="{ 'h-[1000px]': filteredStudents.length > 0 }"
   >
     
     <table
