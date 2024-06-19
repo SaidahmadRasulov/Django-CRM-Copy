@@ -194,7 +194,6 @@ export default {
         .then((response) => response.json())
         .then((data) => {
           this.storedCourses = data;
-          this.storedCourses = this.storedCourses.slice(0, 3);
         });
     },
     getMentors() {
