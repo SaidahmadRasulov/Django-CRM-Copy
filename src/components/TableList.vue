@@ -10,7 +10,7 @@
     </select>
   </div>
   <section
-    class="mt-3 w-full mx-auto h-[600px] overflow-y-scroll"
+    class="mt-3 w-full mx-auto h-[1000px] overflow-y-scroll"
     :class="{ 'h-[600px]': filteredStudents.length > 0 }"
   >
     

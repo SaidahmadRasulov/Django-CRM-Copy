@@ -118,6 +118,11 @@ export default {
           title: "Seyshanba, Payshanba, Shanba",
           val: "juft",
         },
+        {
+          id: 3,
+          title: "Har Kuni",
+          val: "barcha_kun"
+        }
       ],
       date_add: "",
     };
