@@ -144,7 +144,7 @@ export default {
         added_date: this.date_coming,
       };
       const response = await fetch(
-        "https://django-admin.uz/api/customer/students/create/",
+        "https://api.django-admin.uz/api/customer/students/create/",
         {
           method: "POST",
           headers: {
@@ -188,7 +188,7 @@ export default {
       }
     },
     getCourse() {
-      fetch("https://django-admin.uz/api/courses/all/", {
+      fetch("https://api.django-admin.uz/api/courses/all/", {
         headers: {
           Authorization: `Bearer ${this.token}`,
           "Content-type": "application/json",
@@ -203,7 +203,7 @@ export default {
         });
     },
     getMentors() {
-      fetch("https://django-admin.uz/api/customer/mentors/all/", {
+      fetch("https://api.django-admin.uz/api/customer/mentors/all/", {
         headers: {
           Authorization: `Bearer ${this.token}`,
           "Content-type": "application/json",
@@ -217,7 +217,7 @@ export default {
         });
     },
     getGroups() {
-      fetch("https://django-admin.uz/api/groups/all/", {
+      fetch("https://api.django-admin.uz/api/groups/all/", {
         headers: {
           Authorization: `Bearer ${this.token}`,
           "Content-type": "application/json",
@@ -225,8 +225,8 @@ export default {
         credentials: "include",
       })
         .then((response) => response.json())
-        .then((response) => {
-          this.groups = response.data;
+        .then((data) => {
+          this.groups = data;
           console.log("Groups:", this.groups);
         });
     },

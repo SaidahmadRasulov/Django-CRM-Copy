@@ -59,7 +59,7 @@ export default {
       if (confirmation) {
         try {
           const response = await fetch(
-            `https://django-admin.uz/api/customer/mentors/${id}/delete/`,
+            `https://api.django-admin.uz/api/customer/mentors/${id}/delete/`,
             {
               method: "DELETE",
               headers: {

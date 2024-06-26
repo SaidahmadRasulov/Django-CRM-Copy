@@ -51,7 +51,7 @@ export default {
 
     const submit = async () => {
       try {
-        const response = await fetch("https://django-admin.uz/api/token/", {
+        const response = await fetch("https://api.django-admin.uz/api/token/", {
           method: "POST",
           headers: { "Content-type": "application/json" },
           body: JSON.stringify(data),

@@ -65,7 +65,7 @@ export default {
   },
   methods: {
     getDeletedStudents() {
-      fetch("https://django-admin.uz/api/customer/deleted/students/", {
+      fetch("https://api.django-admin.uz/api/customer/deleted/students/", {
         headers: {
           Authorization: `Bearer ${this.token}`,
           "Content-type": "application/json",
@@ -82,7 +82,7 @@ export default {
         });
     },
     getCourse() {
-      fetch("https://django-admin.uz/api/courses/all/", {
+      fetch("https://api.django-admin.uz/api/courses/all/", {
         headers: {
           Authorization: `Bearer ${this.token}`,
           "Content-type": "application/json",

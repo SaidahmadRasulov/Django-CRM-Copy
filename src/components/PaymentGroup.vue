@@ -113,7 +113,7 @@ export default {
       });
     },
     getGroup() {
-      fetch(`https://django-admin.uz/api/groups/${this.selected_group.id}/`, {
+      fetch(`https://api.django-admin.uz/api/groups/${this.selected_group.id}/`, {
         headers: {
           Authorization: `Bearer ${this.token}`,
           "Content-type": "application/json",
@@ -127,7 +127,7 @@ export default {
         });
     },
     getGroups() {
-      fetch(`https://django-admin.uz/api/groups/all/`, {
+      fetch(`https://api.django-admin.uz/api/groups/all/`, {
         headers: {
           Authorization: `Bearer ${this.token}`,
           "Content-type": "application/json",
@@ -154,7 +154,7 @@ export default {
 
       try {
         const response = await fetch(
-          `https://django-admin.uz/api/payments/create/`,
+          `https://api.django-admin.uz/api/payments/create/`,
           {
             method: "POST",
             headers: {

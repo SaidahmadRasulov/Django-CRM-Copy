@@ -131,7 +131,7 @@ export default {
     },
     async handleDelete(id) {
       const response = await fetch(
-        `https://django-admin.uz/api/lids/${id}/delete/`,
+        `https://api.django-admin.uz/api/lids/${id}/delete/`,
         {
           method: "DELETE",
           headers: {
@@ -146,7 +146,7 @@ export default {
       });
     },
     getLeads() {
-      fetch("https://django-admin.uz/api/lids/all/", {
+      fetch("https://api.django-admin.uz/api/lids/all/", {
         headers: {
           Authorization: `Bearer ${this.token}`,
           "Content-type": "application/json",
@@ -159,7 +159,7 @@ export default {
         });
     },
     getCourse() {
-      fetch("https://django-admin.uz/api/courses/all/", {
+      fetch("https://api.django-admin.uz/api/courses/all/", {
         headers: {
           Authorization: `Bearer ${this.token}`,
           "Content-type": "application/json",

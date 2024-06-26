@@ -146,7 +146,7 @@ export default {
       ) {
         try {
           const response = await fetch(
-            `https://django-admin.uz/api/customer/students/create/`,
+            `https://api.django-admin.uz/api/customer/students/create/`,
             {
               method: "POST",
               headers: {
@@ -172,7 +172,7 @@ export default {
       }
     },
     getGroups() {
-      fetch("https://django-admin.uz/api/groups/all/", {
+      fetch("https://api.django-admin.uz/api/groups/all/", {
         headers: {
           Authorization: `Bearer ${this.token}`,
           "Content-type": "application/json",
@@ -186,7 +186,7 @@ export default {
         });
     },
     getCourse() {
-      fetch("https://django-admin.uz/api/courses/all/", {
+      fetch("https://api.django-admin.uz/api/courses/all/", {
         headers: {
           Authorization: `Bearer ${this.token}`,
           "Content-type": "application/json",

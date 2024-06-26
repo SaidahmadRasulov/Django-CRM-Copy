@@ -48,7 +48,7 @@ export default {
   methods: {
     async getGroups() {
       try {
-        const response = await fetch("https://django-admin.uz/api/groups/all/", {
+        const response = await fetch("https://api.django-admin.uz/api/groups/all/", {
           headers: {
             Authorization: `Bearer ${this.token}`,
             "Content-type": "application/json",
@@ -64,7 +64,7 @@ export default {
     },
     async getCourses() {
       try {
-        const response = await fetch("https://django-admin.uz/api/courses/all/", {
+        const response = await fetch("https://api.django-admin.uz/api/courses/all/", {
           headers: {
             Authorization: `Bearer ${this.token}`,
             "Content-type": "application/json",

@@ -64,7 +64,7 @@ export default {
       try {
         if (this.course_title !== "") {
           const response = await fetch(
-            `https://django-admin.uz/api/courses/create/`,
+            `https://api.django-admin.uz/api/courses/create/`,
             {
               method: "POST",
               headers: {
@@ -87,7 +87,7 @@ export default {
         let confirm = window.confirm("O'chirishga ro'zimisz?");
         if (confirm) {
           const response = await fetch(
-            `https://django-admin.uz/api/courses/${this.course_delete_val.id}/delete/`,
+            `https://api.django-admin.uz/api/courses/${this.course_delete_val.id}/delete/`,
             {
               method: "DELETE",
               headers: {
@@ -102,7 +102,7 @@ export default {
       }
     },
     getCourse() {
-      fetch("https://django-admin.uz/api/courses/all/", {
+      fetch("https://api.django-admin.uz/api/courses/all/", {
         headers: {
           Authorization: `Bearer ${this.token}`,
           "Content-type": "application/json",

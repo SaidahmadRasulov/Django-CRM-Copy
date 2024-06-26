@@ -2,7 +2,7 @@
   <div class="select_box text-end">
     <select
       id="select"
-      class="mb-4 p-2 outline-none rounded-md mr-2 border border-[#33333390]"
+      class=" p-2 outline-none rounded-md mr-2 border border-[#33333390]"
       v-model="tableSelect"
     >
     <option value="all">Hammasi</option>
@@ -10,13 +10,13 @@
     </select>
   </div>
   <section
-    class="mt-3 w-full mx-auto h-[600px] overflow-y-scroll"
-    :class="{ 'h-[600px]': filteredStudents.length > 0 }"
+    class="mt-3 w-full mx-auto h-[600px] overflow-y-scroll py-4"
+    :class="{ '!h-[550px] ': filteredStudents.length > 0 }"
   >
     
     <table
       v-if="filteredStudents.length > 0"
-      class="w-full table-fixed text-center mx-auto border border-[#33333390]"
+      class="w-full table-fixed h-full text-center mx-auto border border-[#33333390]"
     >
       <thead>
         <tr class="border bg-[#333] text-[14px] text-white border-[#33333390]">
@@ -118,7 +118,7 @@ export default {
   },
   methods: {
     getStudents() {
-      fetch("https://django-admin.uz/api/customer/students/all/", {
+      fetch("https://api.django-admin.uz/api/customer/students/all/", {
         headers: {
           Authorization: `Bearer ${this.token}`,
           "Content-type": "application/json",
@@ -126,9 +126,8 @@ export default {
         credentials: "include",
       })
         .then((response) => response.json())
-        .then((response) => {
-          this.students = response.data;
-          console.log(this.students);
+        .then((data) => {
+          this.students = data
         });
     },
     handleEdit(obj) {
@@ -142,7 +141,7 @@ export default {
       let confirm = window.confirm("O'chirilishiga rozimisz?");
       if (confirm) {
         const response = await fetch(
-          `https://django-admin.uz/api/customer/students/${id}/delete/`,
+          `https://api.django-admin.uz/api/customer/students/${id}/delete/`,
           {
             method: "DELETE",
             headers: {
@@ -159,7 +158,7 @@ export default {
       }
     },
     getCourse() {
-      fetch('https://django-admin.uz/api/courses/all/', {
+      fetch('https://api.django-admin.uz/api/courses/all/', {
         headers: {
           Authorization: `Bearer ${this.token}`,
           "Content-type": "application/json"

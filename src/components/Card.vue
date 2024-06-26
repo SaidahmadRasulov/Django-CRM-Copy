@@ -54,7 +54,7 @@ export default {
       let confirm = window.confirm("O'chirishga ro'zimisz?");
       if (confirm) {
         const response = await fetch(
-          `https://django-admin.uz/api/groups/${id}/delete/`,
+          `https://api.django-admin.uz/api/groups/${id}/delete/`,
           {
             method: "DELETE",
             headers: {
