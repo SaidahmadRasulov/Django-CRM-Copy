@@ -56,7 +56,7 @@ export default {
           credentials: "include",
         });
         const data = await response.json();
-        this.groupsRender = data.data;
+        this.groupsRender = data;
         this.handleFilterGroups();
       } catch (error) {
         console.error("Error fetching groups:", error);

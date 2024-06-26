@@ -59,8 +59,8 @@ export default {
         credentials: "include",
       })
         .then((response) => response.json())
-        .then((response) => {
-          this.groupsRender = response.data;
+        .then((data) => {
+          this.groupsRender = data;
           console.log(this.groupsRender);
           this.handleFilterGroups();
         });

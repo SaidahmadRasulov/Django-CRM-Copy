@@ -135,8 +135,8 @@ export default {
         credentials: "include",
       })
         .then((response) => response.json())
-        .then((response) => {
-          this.all_groups = response.data;
+        .then((data) => {
+          this.all_groups = data;
           this.filterGroups();
           this.getGroup();
           console.log("All Groups: ", this.all_groups);

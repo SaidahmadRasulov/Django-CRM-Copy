@@ -180,8 +180,8 @@ export default {
         credentials: "include",
       })
         .then((response) => response.json())
-        .then((response) => {
-          this.groups = response.data;
+        .then((data) => {
+          this.groups = data;
           console.log("Modal Groups:", this.groups);
         });
     },

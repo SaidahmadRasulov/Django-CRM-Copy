@@ -10,7 +10,7 @@
         <option :value="item.val" v-for="item in this.courses">{{ item.title }}</option>
       </select>
     </div>
-    <div class="overflow-y-scroll h-full" v-if="filteredStudents.length > 0">
+    <div class="overflow-y-scroll h-[550px]" v-if="filteredStudents.length > 0">
       <table
         class="w-full table-fixed text-center mx-auto border border-[#33333390]"
       >
@@ -73,8 +73,8 @@ export default {
         credentials: "include",
       })
         .then((response) => response.json())
-        .then((response) => {
-          this.students = response.data;
+        .then((data) => {
+          this.students = data;
           console.log(this.students);
         })
         .catch((error) => {

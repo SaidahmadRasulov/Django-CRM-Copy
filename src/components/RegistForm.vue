@@ -198,8 +198,6 @@ export default {
         .then((response) => response.json())
         .then((data) => {
           this.courses = data;
-          console.log(this.courses);
-          this.courses = this.courses.slice(0, 3);
         });
     },
     getMentors() {

@@ -74,8 +74,8 @@ export default {
         credentials: "include",
       })
         .then((response) => response.json())
-        .then((response) => {
-          this.completedStudents = response.data;
+        .then((data) => {
+          this.completedStudents = data;
           console.log("Students: ", this.completedStudents);
         });
     },

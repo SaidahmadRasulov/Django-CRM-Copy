@@ -57,7 +57,7 @@ export default {
   methods: {
     async handleAdd() {
       let new_course = {
-        id: Date.now(),
+        
         title: this.course_title,
         val: this.course_title.slice(0, 3).toLowerCase(),
       };
@@ -74,7 +74,7 @@ export default {
               body: JSON.stringify(new_course),
             }
           );
-          console.log(response);
+          console.log(response.json());
         } else {
           alert("Ma'lumotni kiriting!");
         }

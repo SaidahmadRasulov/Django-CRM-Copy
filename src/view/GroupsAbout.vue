@@ -2,7 +2,10 @@
   <section class="w-full" v-if="this.group.status !== 'completed'">
     <div class="group_title">
       <h1 class="text-2xl">Guruh: {{ title }}</h1>
-      <h1 class="text-xl">Guruhning statusi: {{ group.status == "continues" ? "Aktiv" : "Guruh aktiv emas" }}</h1>
+      <h1 class="text-xl">
+        Guruhning statusi:
+        {{ group.status == "continues" ? "Aktiv" : "Guruh aktiv emas" }}
+      </h1>
       <div class="my-2 flex gap-4">
         <button
           @click="postStartStatus"
@@ -39,26 +42,26 @@
           >
             <td>{{ index + 1 }}</td>
             <td class="py-4">{{ student.fullname }}</td>
-            <td class="group relative" v-for="day in studiedDays">
+            <td class="group relative" v-for="day in studiedDays" :key="day">
               <div
                 class="group-hover:flex transition-all delay-100 group-hover:transition-all group-hover:delay-100 gap-2 absolute top-[-30px] z-10 bg-white left-[-20px] hidden text-white rounded-md"
               >
                 <button
-                  class="bg-green-500 text-xl py-2 px-4 rounded-md"
-                  @click="handlePostTrue(student.id, true, day)"
+                  class="bg-green-500 text-xl py-1 px-2 rounded-md"
+                  @click="handlePostAttendance(student.id, true, day)"
                 >
                   <i class="bx bxs-check-circle"></i>
                 </button>
                 <button
-                  class="bg-red-500 text-xl py-2 px-4 rounded-md"
-                  @click="handlePostTrue(student.id, false, day)"
+                  class="bg-red-500 text-xl py-1 px-2 rounded-md"
+                  @click="handlePostAttendance(student.id, false, day)"
                 >
                   <i class="bx bxs-x-circle"></i>
                 </button>
               </div>
               <button
-                class="shadow-lg p-2 px-4 rounded-md border-2 border-white"
-                v-if="student.attendances.attendated !== null"
+                class="shadow-lg p-1 px-2 rounded-md border-2 border-white"
+                v-if="isAttended(student.id, day) || isAbsent(student.id, day)"
                 :class="{
                   'text-green-500': isAttended(student.id, day),
                   'text-red-500': isAbsent(student.id, day),
@@ -95,7 +98,7 @@ export default {
       groupRender: [],
       token: localStorage.getItem("token"),
       daysInMonth: [],
-      attendanceDate: [],
+      attendanceDate: [], // Initialize as an empty array
       gettedMonth: "",
       selectedDates: "",
     };
@@ -109,7 +112,7 @@ export default {
       });
     },
     getGroup() {
-      fetch(`https://django-admin.uz/api/groups/${this.takedGroup.id}/`, {
+      fetch(`https://api.django-admin.uz/api/groups/${this.takedGroup.id}/`, {
         headers: {
           Authorization: `Bearer ${this.token}`,
           "Content-type": "application/json",
@@ -119,11 +122,11 @@ export default {
         .then((response) => response.json())
         .then((data) => {
           this.group = data;
-          console.log(this.group);
+          console.log("About Group: ", this.group);
         });
     },
     getGroups() {
-      fetch("https://django-admin.uz/api/groups/all/", {
+      fetch("https://api.django-admin.uz/api/groups/all/", {
         headers: {
           Authorization: `Bearer ${this.token}`,
           "Content-type": "application/json",
@@ -131,14 +134,14 @@ export default {
         credentials: "include",
       })
         .then((response) => response.json())
-        .then((response) => {
-          this.groupRender = response.data;
+        .then((data) => {
+          this.groupRender = data;
           this.selectedGroup();
           this.getGroup();
         });
     },
-    getAttendaces() {
-      fetch("https://django-admin.uz/api/attendances/all/", {
+    getAttendances() {
+      fetch("https://api.django-admin.uz/api/attendances/all/", {
         headers: {
           Authorization: `Bearer ${this.token}`,
           "Content-type": "application/json",
@@ -147,7 +150,8 @@ export default {
       })
         .then((response) => response.json())
         .then((response) => {
-          this.attendanceDate = response.data;
+          this.attendanceDate = Array.isArray(response.data) ? response.data : [];
+          // console.log('Attendaces: ',this.attendanceDate)
         });
     },
     getDaysInMonthArray() {
@@ -167,7 +171,7 @@ export default {
     async postStartStatus() {
       try {
         const response = await fetch(
-          "https://django-admin.uz/api/groups/start/",
+          "https://api.django-admin.uz/api/groups/start/",
           {
             method: "POST",
             headers: {
@@ -179,7 +183,7 @@ export default {
         );
         if (response.ok) {
           alert("Guruhning statusi muvaffaqiyatli o'zgardi!");
-          window.location.reload();
+          this.getGroup();
         } else {
           console.error("Failed to update group status");
         }
@@ -192,7 +196,7 @@ export default {
         let confirm = window.confirm("Anniq tugadimi?");
         if (confirm) {
           const response = await fetch(
-            "https://django-admin.uz/api/groups/complete/",
+            "https://api.django-admin.uz/api/groups/complete/",
             {
               method: "POST",
               headers: {
@@ -204,7 +208,7 @@ export default {
           );
           if (response.ok) {
             alert("Guruhning statusi muvaffaqiyatli o'zgardi!");
-            window.location.reload();
+            this.getGroup();
           } else {
             console.error("Failed to update group status");
           }
@@ -215,7 +219,7 @@ export default {
         console.error("Error updating group status:", error);
       }
     },
-    async handlePostTrue(id, attended, day) {
+    async handlePostAttendance(id, attended, day) {
       try {
         const currentDate = new Date();
         const currentMonth = currentDate.getMonth();
@@ -225,7 +229,7 @@ export default {
           .padStart(2, "0")}-${date.getDate().toString().padStart(2, "0")}`;
 
         const response = await fetch(
-          `https://django-admin.uz/api/attendances/create/`,
+          `https://api.django-admin.uz/api/attendances/create/`,
           {
             method: "POST",
             headers: {
@@ -240,7 +244,8 @@ export default {
           }
         );
         if (response.ok) {
-          window.location.reload();
+          // Update the local attendance data
+          this.updateLocalAttendance(id, attended, formattedDate);
         } else {
           console.error("Failed to post attendance");
         }
@@ -248,53 +253,30 @@ export default {
         console.error("Error posting attendance:", error);
       }
     },
-    async handlePostfalse(id, attended, day) {
-      try {
-        const currentDate = new Date();
-        const currentMonth = currentDate.getMonth();
-        const date = new Date(currentDate.getFullYear(), currentMonth, day);
-        const formattedDate = `${date.getFullYear()}-${(date.getMonth() + 1)
-          .toString()
-          .padStart(2, "0")}-${date.getDate().toString().padStart(2, "0")}`;
-        const response = await fetch(
-          `https://django-admin.uz/api/attendances/create/`,
-          {
-            method: "POST",
-            headers: {
-              Authorization: `Bearer ${this.token}`,
-              "Content-type": "application/json",
-            },
-            body: JSON.stringify({
-              student: id,
-              attended: attended,
-              date: formattedDate,
-            }),
-          }
-        );
-
-        if (response.ok) {
-          window.location.reload();
-        } else {
-          console.error("Failed to post attendance");
-        }
-      } catch (error) {
-        console.error("Error posting attendance:", error);
+    updateLocalAttendance(id, attended, date) {
+      const existingRecord = this.attendanceDate.find(
+        (entry) => entry.student === id && entry.date === date
+      );
+      if (existingRecord) {
+        existingRecord.attended = attended;
+      } else {
+        this.attendanceDate.push({
+          student: id,
+          attended: attended,
+          date: date,
+        });
       }
     },
     isAttended(studentId, day) {
-      if (this.attendanceDate) {
-        const currentDate = new Date();
-        const currentMonth = currentDate.getMonth();
-        const formattedDate = `${currentDate.getFullYear()}-${(currentMonth + 1)
-          .toString()
-          .padStart(2, "0")}-${day.toString().padStart(2, "0")}`;
-        const attendance = this.attendanceDate.find(
-          (entry) => entry.student === studentId && entry.date === formattedDate
-        );
-        return attendance ? attendance.attended : false;
-      } else {
-        return false;
-      }
+      const currentDate = new Date();
+      const currentMonth = currentDate.getMonth();
+      const formattedDate = `${currentDate.getFullYear()}-${(currentMonth + 1)
+        .toString()
+        .padStart(2, "0")}-${day.toString().padStart(2, "0")}`;
+      const attendance = this.attendanceDate.find(
+        (entry) => entry.student === studentId && entry.date === formattedDate
+      );
+      return attendance ? attendance.attended : false;
     },
 
     isAbsent(studentId, day) {
@@ -302,46 +284,46 @@ export default {
     },
   },
   computed: {
-  studiedDays() {
-    const currentDate = new Date();
-    const currentMonth = currentDate.getMonth();
-    const daysInMonth = new Date(
-      currentDate.getFullYear(),
-      currentMonth + 1,
-      0
-    ).getDate();
+    studiedDays() {
+      const currentDate = new Date();
+      const currentMonth = currentDate.getMonth();
+      const daysInMonth = new Date(
+        currentDate.getFullYear(),
+        currentMonth + 1,
+        0
+      ).getDate();
 
-    const workingDays = [];
-    const studyDay = this.group.study_day;
+      const workingDays = [];
+      const studyDay = this.group.study_day;
 
-    for (let i = 1; i <= daysInMonth; i++) {
-      const date = new Date(currentDate.getFullYear(), currentMonth, i);
-      const dayOfWeek = date.getDay();
+      for (let i = 1; i <= daysInMonth; i++) {
+        const date = new Date(currentDate.getFullYear(), currentMonth, i);
+        const dayOfWeek = date.getDay();
 
-      if (
-        dayOfWeek !== 0 && // Исключаем воскресенье
-        ((studyDay === "toq" && dayOfWeek % 2 !== 0) || // Нечетные числа для дней недели в "toq"
-        (studyDay === "juft" && dayOfWeek % 2 === 0)) // Четные числа для дней недели в "juft"
-      ) {
-        workingDays.push(i);
+        if (
+          dayOfWeek !== 0 && // Exclude Sundays
+          (studyDay === "barcha_kun" || // Include all days except Sundays
+            (studyDay === "toq" && dayOfWeek % 2 !== 0) || // Odd days for "toq"
+            (studyDay === "juft" && dayOfWeek % 2 === 0)) // Even days for "juft"
+        ) {
+          workingDays.push(i);
+        }
       }
-    }
 
-    return workingDays;
+      return workingDays;
+    },
   },
-},
-
 
   mounted() {
     if (this.group.status !== "completed") {
       this.getGroups();
       this.getDaysInMonthArray();
     }
-    this.getAttendaces();
+    this.getAttendances();
   },
 };
 </script>
 
 <style scoped>
-/* Здесь ваш существующий CSS */
+/* Ваш существующий CSS */
 </style>

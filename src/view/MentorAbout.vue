@@ -7,9 +7,9 @@
     </div>
     <div
       class="overflow-y-scroll w-full h-[70vh] flex-wrap flex gap-4"
-      v-if="teacher.groups.length > 0"
+      v-if="teacher.groups && teacher.groups.length > 0"
     >
-      <div v-for="group in teacher.groups">
+      <div v-for="group in teacher.groups" :key="group.id">
         <div class="group_card rounded-md bg-white h-[350px] w-full pb-3">
           <div class="group_card_header w-full text-center">
             <i class="bx bx-user text-[100px]"></i>
@@ -57,17 +57,20 @@
       </div>
     </div>
     <div class="w-1/2 mx-auto" v-else>
-      <img src="../assets/no-data.png" alt="">
+      <img src="../assets/no-data.png" alt="No Data" />
     </div>
   </div>
 </template>
+
 <script>
 export default {
   data() {
     return {
       selectedMentor: {},
       teachers: [],
-      teacher: {},
+      teacher: {
+        groups: []
+      },
       id: this.$route.params.id,
       token: localStorage.getItem("token"),
     };
@@ -81,7 +84,7 @@ export default {
       });
     },
     getMentors() {
-      fetch("https://django-admin.uz/api/customer/mentors/all/", {
+      fetch("https://api.django-admin.uz/api/customer/mentors/all/", {
         headers: {
           Authorization: `Bearer ${this.token}`,
           "Content-type": "application/json",
@@ -91,13 +94,14 @@ export default {
         .then((response) => response.json())
         .then((data) => {
           this.teachers = data;
-          this.selectedTeacher();
-          this.getTeacher();
+          console.log(this.teachers)
+          this.selectedTeacher()
+          this.getTeacher()
         });
     },
     getTeacher() {
       fetch(
-        `https://django-admin.uz/api/customer/mentors/${this.selectedMentor.id}/`,
+        `https://api.django-admin.uz/api/customer/mentors/${this.selectedMentor.id}/`,
         {
           headers: {
             Authorization: `Bearer ${this.token}`,
@@ -118,4 +122,5 @@ export default {
   },
 };
 </script>
+
 <style lang=""></style>

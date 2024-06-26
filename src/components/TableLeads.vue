@@ -154,8 +154,8 @@ export default {
         credentials: "include",
       })
         .then((response) => response.json())
-        .then((response) => {
-          this.leads = response.data;
+        .then((data) => {
+          this.leads = data;
         });
     },
     getCourse() {
